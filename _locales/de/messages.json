@@ -1,0 +1,5 @@
+{
+  "extName": { "message": "Steam TL;DR" },
+  "extDescription": { "message": "KI-Zusammenfassung der aktuellen Steam-Rezensionen eines Spiels, direkt auf seiner Store-Seite." },
+  "optionsPlaceholder": { "message": "Optionen folgen in Kürze (M3)." }
+}

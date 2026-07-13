@@ -1,0 +1,5 @@
+{
+  "extName": { "message": "Steam TL;DR" },
+  "extDescription": { "message": "AI summary of a game's recent Steam reviews, shown directly on its store page." },
+  "optionsPlaceholder": { "message": "Options coming soon (M3)." }
+}

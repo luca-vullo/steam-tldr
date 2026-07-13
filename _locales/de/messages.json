@@ -130,5 +130,65 @@
   },
   "panelClose": {
     "message": "Schließen"
+  },
+  "optionsTitle": {
+    "message": "Einstellungen"
+  },
+  "optionsSelectionSection": {
+    "message": "Rezensionsauswahl"
+  },
+  "optionsDayRange": {
+    "message": "Zeitraum (Tage)"
+  },
+  "optionsMinChars": {
+    "message": "Mindestlänge (Zeichen)"
+  },
+  "optionsWeightsTitle": {
+    "message": "Scoring-Gewichte"
+  },
+  "optionsWeightHelpfulness": {
+    "message": "Nützlichkeit"
+  },
+  "optionsWeightPlaytime": {
+    "message": "Spielstunden"
+  },
+  "optionsWeightSubstance": {
+    "message": "Textlänge"
+  },
+  "optionsWeightFreshness": {
+    "message": "Aktualität"
+  },
+  "optionsWeightsHint": {
+    "message": "Werte 0–1; sie werden automatisch normalisiert, nur ihr Verhältnis zählt."
+  },
+  "optionsPresetsTitle": {
+    "message": "Presets"
+  },
+  "optionsPresetLoad": {
+    "message": "Laden"
+  },
+  "optionsPresetSave": {
+    "message": "Als Preset speichern"
+  },
+  "optionsPresetDelete": {
+    "message": "Löschen"
+  },
+  "optionsPresetExport": {
+    "message": "Exportieren"
+  },
+  "optionsPresetImport": {
+    "message": "Importieren"
+  },
+  "optionsPresetNameRequired": {
+    "message": "Wähle einen Namen für das Preset"
+  },
+  "optionsPresetImportError": {
+    "message": "Ungültige Preset-Datei"
+  },
+  "optionsCacheTtl": {
+    "message": "Cache-Dauer der Zusammenfassungen (Stunden, 0 = aus)"
+  },
+  "panelGeneratedAt": {
+    "message": "Generiert: $1."
   }
 }

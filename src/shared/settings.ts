@@ -70,6 +70,31 @@ export function activeProfile(settings: ProviderSettings): ProviderProfile {
   );
 }
 
+// F6 — durata della cache dei riassunti (0 = disattivata)
+export const DEFAULT_CACHE_TTL_HOURS = 24;
+
+export async function loadCacheTtlHours(): Promise<number> {
+  const stored = await chrome.storage.local.get("cacheTtlHours");
+  const value = stored["cacheTtlHours"];
+  return typeof value === "number" && value >= 0 ? value : DEFAULT_CACHE_TTL_HOURS;
+}
+
+export async function saveCacheTtlHours(hours: number): Promise<void> {
+  await chrome.storage.local.set({ cacheTtlHours: hours });
+}
+
+// F9 — preset delle impostazioni di selezione
+export type PresetMap = Record<string, ReviewSelectionConfig>;
+
+export async function loadPresets(): Promise<PresetMap> {
+  const stored = await chrome.storage.local.get("selectionPresets");
+  return (stored["selectionPresets"] as PresetMap | undefined) ?? {};
+}
+
+export async function savePresets(presets: PresetMap): Promise<void> {
+  await chrome.storage.local.set({ selectionPresets: presets });
+}
+
 // F8 — lingua di output/UI
 export async function loadLanguage(): Promise<LanguageCode> {
   const stored = await chrome.storage.local.get("language");

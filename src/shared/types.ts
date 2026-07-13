@@ -68,7 +68,7 @@ export interface ProviderProfile {
 export type Message =
   | { type: "ping"; appid: string }
   | { type: "fetchReviews"; appid: string }
-  | { type: "summarize"; appid: string; gameName: string };
+  | { type: "summarize"; appid: string; gameName: string; force?: boolean };
 
 export type MessageResponse =
   | { type: "pong"; appid: string }
@@ -84,5 +84,7 @@ export type MessageResponse =
       reviewsUsed: number;
       poolSize: number;
       querySummary: ReviewQuerySummary;
+      fromCache: boolean;
+      createdAt: number; // epoch ms della generazione
     }
   | { type: "error"; code: "missing_api_key" | "generic"; message: string };

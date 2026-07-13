@@ -130,5 +130,65 @@
   },
   "panelClose": {
     "message": "Cerrar"
+  },
+  "optionsTitle": {
+    "message": "Configuración"
+  },
+  "optionsSelectionSection": {
+    "message": "Selección de reseñas"
+  },
+  "optionsDayRange": {
+    "message": "Rango de fechas (días)"
+  },
+  "optionsMinChars": {
+    "message": "Longitud mínima (caracteres)"
+  },
+  "optionsWeightsTitle": {
+    "message": "Pesos de puntuación"
+  },
+  "optionsWeightHelpfulness": {
+    "message": "Utilidad"
+  },
+  "optionsWeightPlaytime": {
+    "message": "Horas jugadas"
+  },
+  "optionsWeightSubstance": {
+    "message": "Longitud del texto"
+  },
+  "optionsWeightFreshness": {
+    "message": "Frescura"
+  },
+  "optionsWeightsHint": {
+    "message": "Valores 0–1; se normalizan automáticamente, solo importa su proporción."
+  },
+  "optionsPresetsTitle": {
+    "message": "Preajustes"
+  },
+  "optionsPresetLoad": {
+    "message": "Cargar"
+  },
+  "optionsPresetSave": {
+    "message": "Guardar como preajuste"
+  },
+  "optionsPresetDelete": {
+    "message": "Eliminar"
+  },
+  "optionsPresetExport": {
+    "message": "Exportar"
+  },
+  "optionsPresetImport": {
+    "message": "Importar"
+  },
+  "optionsPresetNameRequired": {
+    "message": "Elige un nombre para el preajuste"
+  },
+  "optionsPresetImportError": {
+    "message": "Archivo de preajustes no válido"
+  },
+  "optionsCacheTtl": {
+    "message": "Duración de la caché de resúmenes (horas, 0 = off)"
+  },
+  "panelGeneratedAt": {
+    "message": "Generado: $1."
   }
 }

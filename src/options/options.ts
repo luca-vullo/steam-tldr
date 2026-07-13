@@ -1,21 +1,31 @@
-// Opzioni: profili provider (F7), lingua (F8) e selezione recensioni (F2).
-// Pesi dello scoring e preset completi (F9) arrivano con M3/M4.
+// Opzioni: profili provider (F7), selezione recensioni con pesi e preset
+// (F2/F9), lingua (F8), cache (F6), attivazione automatica (F5).
 import {
   DEFAULT_ANTHROPIC_MODEL,
+  DEFAULT_SELECTION_CONFIG,
+  loadCacheTtlHours,
   loadLanguage,
+  loadPresets,
   loadProviderSettings,
   loadSelectionConfig,
+  saveCacheTtlHours,
   saveLanguage,
+  savePresets,
   saveProviderSettings,
   saveSelectionConfig,
+  type PresetMap,
   type ProviderSettings,
 } from "../shared/settings";
-import type { ProviderKind, ProviderProfile, SelectionMode } from "../shared/types";
+import type {
+  ProviderKind,
+  ProviderProfile,
+  ReviewSelectionConfig,
+  SelectionMode,
+} from "../shared/types";
 import type { LanguageCode } from "../shared/i18n";
 
-// Preset UI → protocollo + endpoint. baseUrl "fixed" = endpoint di default del
-// protocollo, campo nascosto; "required" = endpoint della risorsa utente.
-interface Preset {
+// ---------- preset UI dei tipi di profilo ----------
+interface KindPreset {
   kind: ProviderKind;
   baseUrl: "fixed" | "required" | "editable";
   defaultBaseUrl: string;
@@ -23,50 +33,16 @@ interface Preset {
   hintKey: string;
 }
 
-const PRESETS: Record<string, Preset> = {
-  anthropic: {
-    kind: "anthropic",
-    baseUrl: "fixed",
-    defaultBaseUrl: "",
-    defaultModel: DEFAULT_ANTHROPIC_MODEL,
-    hintKey: "",
-  },
-  anthropic_foundry: {
-    kind: "anthropic",
-    baseUrl: "required",
-    defaultBaseUrl: "",
-    defaultModel: "",
-    hintKey: "optionsEndpointHintFoundry",
-  },
-  openai: {
-    kind: "openai_compat",
-    baseUrl: "fixed",
-    defaultBaseUrl: "",
-    defaultModel: "",
-    hintKey: "",
-  },
-  openai_azure: {
-    kind: "openai_compat",
-    baseUrl: "required",
-    defaultBaseUrl: "",
-    defaultModel: "",
-    hintKey: "optionsEndpointHintAzureOpenAI",
-  },
-  gemini: {
-    kind: "gemini",
-    baseUrl: "fixed",
-    defaultBaseUrl: "",
-    defaultModel: "",
-    hintKey: "",
-  },
-  local: {
-    kind: "openai_compat",
-    baseUrl: "editable",
-    defaultBaseUrl: "http://localhost:11434/v1",
-    defaultModel: "",
-    hintKey: "optionsEndpointHintLocal",
-  },
+const KIND_PRESETS: Record<string, KindPreset> = {
+  anthropic: { kind: "anthropic", baseUrl: "fixed", defaultBaseUrl: "", defaultModel: DEFAULT_ANTHROPIC_MODEL, hintKey: "" },
+  anthropic_foundry: { kind: "anthropic", baseUrl: "required", defaultBaseUrl: "", defaultModel: "", hintKey: "optionsEndpointHintFoundry" },
+  openai: { kind: "openai_compat", baseUrl: "fixed", defaultBaseUrl: "", defaultModel: "", hintKey: "" },
+  openai_azure: { kind: "openai_compat", baseUrl: "required", defaultBaseUrl: "", defaultModel: "", hintKey: "optionsEndpointHintAzureOpenAI" },
+  gemini: { kind: "gemini", baseUrl: "fixed", defaultBaseUrl: "", defaultModel: "", hintKey: "" },
+  local: { kind: "openai_compat", baseUrl: "editable", defaultBaseUrl: "http://localhost:11434/v1", defaultModel: "", hintKey: "optionsEndpointHintLocal" },
 };
+
+const DEFAULT_PRESET_NAME = "Default";
 
 for (const el of document.querySelectorAll<HTMLElement>("[data-i18n]")) {
   const key = el.dataset["i18n"];
@@ -84,15 +60,19 @@ const apiKeyInput = $<HTMLInputElement>("apiKey");
 const modelInput = $<HTMLInputElement>("model");
 const statusEl = $<HTMLSpanElement>("status");
 const statusGeneralEl = $<HTMLSpanElement>("statusGeneral");
+const presetListSelect = $<HTMLSelectElement>("presetList");
+const presetNameInput = $<HTMLInputElement>("presetName");
 
 let settings: ProviderSettings = { activeProfileId: "", profiles: [] };
+let presets: PresetMap = {};
 let editingId: string | null = null; // null = nuovo profilo
 
-function applyPreset(): void {
-  const preset = PRESETS[presetSelect.value]!;
+// ---------- profili provider ----------
+
+function applyKindPreset(): void {
+  const preset = KIND_PRESETS[presetSelect.value]!;
   baseUrlRow.classList.toggle("hidden", preset.baseUrl === "fixed");
   baseUrlInput.value = preset.defaultBaseUrl;
-  baseUrlInput.required = preset.baseUrl === "required";
   baseUrlHint.textContent = preset.hintKey ? chrome.i18n.getMessage(preset.hintKey) : "";
   if (!modelInput.value) modelInput.value = preset.defaultModel;
 }
@@ -144,14 +124,14 @@ function renderProfiles(): void {
 function startEdit(profile: ProviderProfile): void {
   editingId = profile.id;
   nameInput.value = profile.name;
-  presetSelect.value = guessPreset(profile);
-  applyPreset();
+  presetSelect.value = guessKindPreset(profile);
+  applyKindPreset();
   baseUrlInput.value = profile.baseUrl;
   apiKeyInput.value = profile.apiKey;
   modelInput.value = profile.model;
 }
 
-function guessPreset(profile: ProviderProfile): string {
+function guessKindPreset(profile: ProviderProfile): string {
   if (profile.kind === "gemini") return "gemini";
   if (profile.kind === "anthropic") return profile.baseUrl ? "anthropic_foundry" : "anthropic";
   if (/localhost|127\.0\.0\.1/.test(profile.baseUrl)) return "local";
@@ -164,7 +144,7 @@ function resetForm(): void {
   apiKeyInput.value = "";
   modelInput.value = "";
   presetSelect.value = "anthropic";
-  applyPreset();
+  applyKindPreset();
   modelInput.value = DEFAULT_ANTHROPIC_MODEL;
 }
 
@@ -187,16 +167,16 @@ async function requestOriginPermission(baseUrl: string): Promise<boolean> {
 }
 
 async function saveProfile(): Promise<void> {
-  const preset = PRESETS[presetSelect.value]!;
+  const preset = KIND_PRESETS[presetSelect.value]!;
   const baseUrl = preset.baseUrl === "fixed" ? "" : baseUrlInput.value.trim();
   if (preset.baseUrl === "required" && !baseUrl) {
-    flash(statusEl, chrome.i18n.getMessage("optionsEndpointRequired"), "crimson");
+    flash(statusEl, chrome.i18n.getMessage("optionsEndpointRequired"), "#cd5444");
     return;
   }
 
   // Endpoint custom: chiedi il permesso host SOLO per quell'origin
   if (baseUrl && !(await requestOriginPermission(baseUrl))) {
-    flash(statusEl, chrome.i18n.getMessage("optionsPermissionDenied"), "crimson");
+    flash(statusEl, chrome.i18n.getMessage("optionsPermissionDenied"), "#cd5444");
     return;
   }
 
@@ -216,7 +196,7 @@ async function saveProfile(): Promise<void> {
 
   await persistProfiles();
   resetForm();
-  flash(statusEl, chrome.i18n.getMessage("optionsSaved"), "green");
+  flash(statusEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
 }
 
 async function persistProfiles(): Promise<void> {
@@ -224,17 +204,122 @@ async function persistProfiles(): Promise<void> {
   renderProfiles();
 }
 
+// ---------- selezione recensioni: form <-> config ----------
+
+function readSelectionForm(): ReviewSelectionConfig {
+  const num = (id: string, fallback: number) => {
+    const value = Number($<HTMLInputElement>(id).value);
+    return Number.isFinite(value) ? value : fallback;
+  };
+  return {
+    mode: $<HTMLSelectElement>("mode").value as SelectionMode,
+    numReviews: Math.max(5, Math.min(200, num("numReviews", 50))),
+    dayRange: Math.max(1, Math.min(365, num("dayRange", 30))),
+    minChars: Math.max(0, Math.min(500, num("minChars", 30))),
+    weights: {
+      helpfulness: clamp01(num("wHelpfulness", 0.4)),
+      playtime: clamp01(num("wPlaytime", 0.3)),
+      substance: clamp01(num("wSubstance", 0.2)),
+      freshness: clamp01(num("wFreshness", 0.1)),
+    },
+  };
+}
+
+function writeSelectionForm(config: ReviewSelectionConfig): void {
+  $<HTMLSelectElement>("mode").value = config.mode;
+  $<HTMLInputElement>("numReviews").value = String(config.numReviews);
+  $<HTMLInputElement>("dayRange").value = String(config.dayRange);
+  $<HTMLInputElement>("minChars").value = String(config.minChars);
+  $<HTMLInputElement>("wHelpfulness").value = String(config.weights.helpfulness);
+  $<HTMLInputElement>("wPlaytime").value = String(config.weights.playtime);
+  $<HTMLInputElement>("wSubstance").value = String(config.weights.substance);
+  $<HTMLInputElement>("wFreshness").value = String(config.weights.freshness);
+}
+
+function clamp01(n: number): number {
+  return Math.min(1, Math.max(0, n));
+}
+
+// ---------- preset (F9) ----------
+
+function renderPresetList(): void {
+  presetListSelect.replaceChildren();
+  for (const name of [DEFAULT_PRESET_NAME, ...Object.keys(presets).sort()]) {
+    const option = document.createElement("option");
+    option.value = name;
+    option.textContent = name;
+    presetListSelect.append(option);
+  }
+}
+
+async function presetLoad(): Promise<void> {
+  const name = presetListSelect.value;
+  const config = name === DEFAULT_PRESET_NAME ? DEFAULT_SELECTION_CONFIG : presets[name];
+  if (!config) return;
+  writeSelectionForm(config);
+  await saveSelectionConfig(config);
+  flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+}
+
+async function presetSave(): Promise<void> {
+  const name = presetNameInput.value.trim() || presetListSelect.value;
+  if (!name || name === DEFAULT_PRESET_NAME) {
+    flash(statusGeneralEl, chrome.i18n.getMessage("optionsPresetNameRequired"), "#cd5444");
+    return;
+  }
+  presets[name] = readSelectionForm();
+  await savePresets(presets);
+  renderPresetList();
+  presetListSelect.value = name;
+  presetNameInput.value = "";
+  flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+}
+
+async function presetDelete(): Promise<void> {
+  const name = presetListSelect.value;
+  if (name === DEFAULT_PRESET_NAME) return;
+  delete presets[name];
+  await savePresets(presets);
+  renderPresetList();
+}
+
+function presetExport(): void {
+  const payload = JSON.stringify({ selectionPresets: presets }, null, 2);
+  const blob = new Blob([payload], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "steam-tldr-presets.json";
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+async function presetImport(file: File): Promise<void> {
+  try {
+    const parsed = JSON.parse(await file.text()) as { selectionPresets?: PresetMap };
+    const incoming = parsed.selectionPresets;
+    if (!incoming || typeof incoming !== "object") throw new Error("formato non valido");
+    for (const [name, config] of Object.entries(incoming)) {
+      if (name !== DEFAULT_PRESET_NAME) {
+        presets[name] = { ...DEFAULT_SELECTION_CONFIG, ...config, weights: { ...DEFAULT_SELECTION_CONFIG.weights, ...config.weights } };
+      }
+    }
+    await savePresets(presets);
+    renderPresetList();
+    flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+  } catch {
+    flash(statusGeneralEl, chrome.i18n.getMessage("optionsPresetImportError"), "#cd5444");
+  }
+}
+
+// ---------- generali ----------
+
 async function saveGeneral(): Promise<void> {
+  await saveSelectionConfig(readSelectionForm());
   await saveLanguage($<HTMLSelectElement>("language").value as LanguageCode);
-  const selection = await loadSelectionConfig();
-  selection.mode = $<HTMLSelectElement>("mode").value as SelectionMode;
-  selection.numReviews = Math.max(
-    5,
-    Math.min(200, Number($<HTMLInputElement>("numReviews").value) || 50),
-  );
-  await saveSelectionConfig(selection);
+  const ttl = Number($<HTMLInputElement>("cacheTtl").value);
+  await saveCacheTtlHours(Number.isFinite(ttl) && ttl >= 0 ? Math.min(720, ttl) : 24);
   await chrome.storage.local.set({ autoGenerate: $<HTMLInputElement>("autoGenerate").checked });
-  flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "green");
+  flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
 }
 
 function flash(el: HTMLElement, text: string, color: string): void {
@@ -248,19 +333,32 @@ async function init(): Promise<void> {
   renderProfiles();
   resetForm();
 
+  presets = await loadPresets();
+  renderPresetList();
+
+  writeSelectionForm(await loadSelectionConfig());
   $<HTMLSelectElement>("language").value = await loadLanguage();
-  const selection = await loadSelectionConfig();
-  $<HTMLSelectElement>("mode").value = selection.mode;
-  $<HTMLInputElement>("numReviews").value = String(selection.numReviews);
+  $<HTMLInputElement>("cacheTtl").value = String(await loadCacheTtlHours());
   const stored = await chrome.storage.local.get("autoGenerate");
   $<HTMLInputElement>("autoGenerate").checked = stored["autoGenerate"] === true;
 }
 
 presetSelect.addEventListener("change", () => {
   modelInput.value = "";
-  applyPreset();
+  applyKindPreset();
 });
 $<HTMLButtonElement>("saveProfile").addEventListener("click", () => void saveProfile());
 $<HTMLButtonElement>("resetForm").addEventListener("click", resetForm);
 $<HTMLButtonElement>("saveGeneral").addEventListener("click", () => void saveGeneral());
+$<HTMLButtonElement>("presetLoad").addEventListener("click", () => void presetLoad());
+$<HTMLButtonElement>("presetSave").addEventListener("click", () => void presetSave());
+$<HTMLButtonElement>("presetDelete").addEventListener("click", () => void presetDelete());
+$<HTMLButtonElement>("presetExport").addEventListener("click", presetExport);
+$<HTMLButtonElement>("presetImportBtn").addEventListener("click", () =>
+  $<HTMLInputElement>("presetImport").click(),
+);
+$<HTMLInputElement>("presetImport").addEventListener("change", (e) => {
+  const file = (e.target as HTMLInputElement).files?.[0];
+  if (file) void presetImport(file);
+});
 void init();

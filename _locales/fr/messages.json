@@ -130,5 +130,65 @@
   },
   "panelClose": {
     "message": "Fermer"
+  },
+  "optionsTitle": {
+    "message": "Paramètres"
+  },
+  "optionsSelectionSection": {
+    "message": "Sélection des avis"
+  },
+  "optionsDayRange": {
+    "message": "Plage de dates (jours)"
+  },
+  "optionsMinChars": {
+    "message": "Longueur minimale (caractères)"
+  },
+  "optionsWeightsTitle": {
+    "message": "Poids du scoring"
+  },
+  "optionsWeightHelpfulness": {
+    "message": "Utilité"
+  },
+  "optionsWeightPlaytime": {
+    "message": "Heures de jeu"
+  },
+  "optionsWeightSubstance": {
+    "message": "Longueur du texte"
+  },
+  "optionsWeightFreshness": {
+    "message": "Fraîcheur"
+  },
+  "optionsWeightsHint": {
+    "message": "Valeurs 0–1 ; elles sont normalisées automatiquement, seul leur rapport compte."
+  },
+  "optionsPresetsTitle": {
+    "message": "Préréglages"
+  },
+  "optionsPresetLoad": {
+    "message": "Charger"
+  },
+  "optionsPresetSave": {
+    "message": "Enregistrer comme préréglage"
+  },
+  "optionsPresetDelete": {
+    "message": "Supprimer"
+  },
+  "optionsPresetExport": {
+    "message": "Exporter"
+  },
+  "optionsPresetImport": {
+    "message": "Importer"
+  },
+  "optionsPresetNameRequired": {
+    "message": "Choisissez un nom pour le préréglage"
+  },
+  "optionsPresetImportError": {
+    "message": "Fichier de préréglages non valide"
+  },
+  "optionsCacheTtl": {
+    "message": "Durée du cache des résumés (heures, 0 = off)"
+  },
+  "panelGeneratedAt": {
+    "message": "Généré : $1."
   }
 }

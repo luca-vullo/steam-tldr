@@ -130,5 +130,65 @@
   },
   "panelClose": {
     "message": "Close"
+  },
+  "optionsTitle": {
+    "message": "Settings"
+  },
+  "optionsSelectionSection": {
+    "message": "Review selection"
+  },
+  "optionsDayRange": {
+    "message": "Date range (days)"
+  },
+  "optionsMinChars": {
+    "message": "Minimum length (characters)"
+  },
+  "optionsWeightsTitle": {
+    "message": "Scoring weights"
+  },
+  "optionsWeightHelpfulness": {
+    "message": "Helpfulness"
+  },
+  "optionsWeightPlaytime": {
+    "message": "Hours played"
+  },
+  "optionsWeightSubstance": {
+    "message": "Text length"
+  },
+  "optionsWeightFreshness": {
+    "message": "Freshness"
+  },
+  "optionsWeightsHint": {
+    "message": "Values 0–1; they are normalized automatically, only their ratio matters."
+  },
+  "optionsPresetsTitle": {
+    "message": "Presets"
+  },
+  "optionsPresetLoad": {
+    "message": "Load"
+  },
+  "optionsPresetSave": {
+    "message": "Save as preset"
+  },
+  "optionsPresetDelete": {
+    "message": "Delete"
+  },
+  "optionsPresetExport": {
+    "message": "Export"
+  },
+  "optionsPresetImport": {
+    "message": "Import"
+  },
+  "optionsPresetNameRequired": {
+    "message": "Choose a name for the preset"
+  },
+  "optionsPresetImportError": {
+    "message": "Invalid preset file"
+  },
+  "optionsCacheTtl": {
+    "message": "Summary cache duration (hours, 0 = off)"
+  },
+  "panelGeneratedAt": {
+    "message": "Generated: $1."
   }
 }

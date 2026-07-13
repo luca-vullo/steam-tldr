@@ -73,7 +73,7 @@ const CSS = `
   font-weight: 400;
 }
 .stldr-title .stldr-ai { color: #66c0f4; font-weight: 700; }
-.stldr-close {
+.stldr-close, .stldr-gear {
   border: none;
   background: transparent;
   color: #8f98a0;
@@ -81,8 +81,10 @@ const CSS = `
   cursor: pointer;
   padding: 2px 6px;
   line-height: 1;
+  text-decoration: none;
 }
-.stldr-close:hover { color: #fff; }
+.stldr-close:hover, .stldr-gear:hover { color: #fff; }
+.stldr-actions { display: flex; align-items: center; gap: 2px; }
 .stldr-game { color: #8f98a0; font-size: 12px; margin: 0 0 12px; }
 
 .stldr-generate {
@@ -160,12 +162,15 @@ const CSS = `
 export interface TLDRWidget {
   setIdle(): void;
   setLoading(): void;
-  setResult(summary: TLDRSummary, reviewsUsed: number): void;
+  setResult(summary: TLDRSummary, reviewsUsed: number, createdAt: number): void;
   setError(message: string, missingKey: boolean): void;
   open(): void;
 }
 
-export function createWidget(gameName: string, onGenerate: () => void): TLDRWidget {
+export function createWidget(
+  gameName: string,
+  onGenerate: (force?: boolean) => void,
+): TLDRWidget {
   const style = document.createElement("style");
   style.textContent = CSS;
 
@@ -187,12 +192,21 @@ export function createWidget(gameName: string, onGenerate: () => void): TLDRWidg
   ai.className = "stldr-ai";
   ai.textContent = "TL;DR ";
   title.append(ai, document.createTextNode(t("panelTitle")));
+  const actions = document.createElement("div");
+  actions.className = "stldr-actions";
+  const gear = document.createElement("a");
+  gear.className = "stldr-gear";
+  gear.href = chrome.runtime.getURL("src/options/options.html");
+  gear.target = "_blank";
+  gear.textContent = "⚙";
+  gear.title = t("panelOpenOptions");
   const closeBtn = document.createElement("button");
   closeBtn.className = "stldr-close";
   closeBtn.textContent = "✕";
   closeBtn.title = t("panelClose");
   closeBtn.addEventListener("click", () => drawer.classList.remove("stldr-open"));
-  header.append(title, closeBtn);
+  actions.append(gear, closeBtn);
+  header.append(title, actions);
 
   const game = document.createElement("p");
   game.className = "stldr-game";
@@ -211,15 +225,16 @@ export function createWidget(gameName: string, onGenerate: () => void): TLDRWidg
 
   function clear(): void {
     body.replaceChildren();
-    header.querySelector(".stldr-regenerate")?.remove();
+    actions.querySelector(".stldr-regenerate")?.remove();
   }
 
   function addRegenerate(): void {
     const btn = document.createElement("button");
     btn.className = "stldr-regenerate";
     btn.textContent = t("panelRegenerate");
-    btn.addEventListener("click", onGenerate);
-    header.insertBefore(btn, closeBtn);
+    // Rigenera bypassa la cache (force)
+    btn.addEventListener("click", () => onGenerate(true));
+    actions.insertBefore(btn, gear);
   }
 
   function setIdle(): void {
@@ -227,7 +242,7 @@ export function createWidget(gameName: string, onGenerate: () => void): TLDRWidg
     const btn = document.createElement("button");
     btn.className = "stldr-generate";
     btn.textContent = t("panelGenerate");
-    btn.addEventListener("click", onGenerate);
+    btn.addEventListener("click", () => onGenerate());
     const hint = document.createElement("p");
     hint.className = "stldr-hint";
     hint.textContent = t("panelIdleHint");
@@ -246,7 +261,7 @@ export function createWidget(gameName: string, onGenerate: () => void): TLDRWidg
     body.append(row);
   }
 
-  function setResult(summary: TLDRSummary, reviewsUsed: number): void {
+  function setResult(summary: TLDRSummary, reviewsUsed: number, createdAt: number): void {
     clear();
 
     const sentiment = SENTIMENT_STYLE[summary.sentiment];
@@ -279,7 +294,9 @@ export function createWidget(gameName: string, onGenerate: () => void): TLDRWidg
 
     const footer = document.createElement("div");
     footer.className = "stldr-footer";
-    footer.textContent = t("panelDisclosure", [String(reviewsUsed)]);
+    const when = new Date(createdAt).toLocaleString();
+    footer.textContent =
+      t("panelDisclosure", [String(reviewsUsed)]) + " " + t("panelGeneratedAt", [when]);
     body.append(footer);
 
     addRegenerate();

@@ -4,25 +4,87 @@
     <meta charset="utf-8" />
     <title>Steam TL;DR</title>
     <style>
-      body { font-family: system-ui, sans-serif; max-width: 620px; margin: 2rem auto; padding: 0 1rem; }
-      h2 { margin-top: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.25rem; }
-      label { display: block; margin-top: 1rem; font-weight: 600; }
-      input, select { width: 100%; padding: 0.4rem; margin-top: 0.25rem; box-sizing: border-box; }
-      button { margin-top: 1rem; padding: 0.4rem 1.2rem; }
-      #status { margin-left: 0.75rem; color: green; }
-      .hint { font-size: 0.85rem; color: #666; margin: 0.25rem 0 0; }
-      #profileList { list-style: none; padding: 0; }
-      #profileList li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; border-bottom: 1px solid #eee; }
-      #profileList .grow { flex: 1; }
-      #profileList .meta { color: #666; font-size: 0.85rem; }
-      #profileList button { margin: 0; padding: 0.2rem 0.6rem; }
+      * { box-sizing: border-box; }
+      body {
+        font-family: "Motiva Sans", Arial, Helvetica, sans-serif;
+        background: linear-gradient(180deg, #23405a 0%, #1b2838 30%, #10161d 100%) fixed;
+        color: #c6d4df;
+        font-size: 14px;
+        line-height: 1.5;
+        max-width: 720px;
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
+      }
+      h1 { color: #fff; font-weight: 400; font-size: 26px; margin: 0 0 1.5rem; }
+      h1 .ai { color: #66c0f4; font-weight: 700; }
+      h2 {
+        color: #66c0f4;
+        font-size: 13px;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.35rem;
+        margin: 2.2rem 0 0.5rem;
+      }
+      h3 { color: #fff; font-size: 14px; font-weight: 400; margin: 1.4rem 0 0.2rem; }
+      label { display: block; margin-top: 0.9rem; color: #fff; font-size: 13px; }
+      .hint { font-size: 12px; color: #8f98a0; margin: 0.25rem 0 0; }
+      input, select {
+        width: 100%;
+        padding: 0.5rem 0.6rem;
+        margin-top: 0.3rem;
+        color: #e5e5e5;
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(0, 0, 0, 0.6);
+        border-radius: 3px;
+        font-size: 13px;
+      }
+      input:focus, select:focus { outline: none; border-color: #66c0f4; }
+      select option { background: #1b2838; }
+      button {
+        margin-top: 1rem;
+        padding: 0.5rem 1.3rem;
+        border: none;
+        border-radius: 2px;
+        cursor: pointer;
+        font-size: 13px;
+        color: #66c0f4;
+        background: rgba(103, 193, 245, 0.15);
+      }
+      button:hover { color: #fff; background: rgba(103, 193, 245, 0.35); }
+      button.primary {
+        color: #d2efa9;
+        background: linear-gradient(to right, #75b022 5%, #588a1b 95%);
+      }
+      button.primary:hover { color: #fff; background: linear-gradient(to right, #8ed629 5%, #6aa621 95%); }
+      .status { margin-left: 0.75rem; }
+      .row { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end; }
+      .row > div { flex: 1 1 140px; }
+      .grid4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+      @media (max-width: 560px) { .grid4 { grid-template-columns: repeat(2, 1fr); } }
+      #profileList { list-style: none; padding: 0; margin: 0.75rem 0 0; }
+      #profileList li {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.5rem 0.6rem;
+        border-radius: 3px;
+        background: rgba(0, 0, 0, 0.2);
+        margin-bottom: 4px;
+      }
+      #profileList .grow { flex: 1; color: #fff; }
+      #profileList .meta { color: #8f98a0; font-size: 12px; overflow-wrap: anywhere; }
+      #profileList button { margin: 0; padding: 0.2rem 0.55rem; }
+      #profileList input[type="radio"] { width: auto; margin: 0; accent-color: #66c0f4; }
       .hidden { display: none; }
-      .check { display: flex; align-items: center; gap: 0.5rem; }
-      .check input { width: auto; margin: 0; }
+      .check { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; }
+      .check input { width: auto; margin: 0; accent-color: #66c0f4; }
+      .buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
     </style>
   </head>
   <body>
-    <h1 data-i18n="extName"></h1>
+    <h1><span class="ai">TL;DR</span> Steam — <span data-i18n="optionsTitle"></span></h1>
 
     <h2 data-i18n="optionsProfilesSection"></h2>
     <ul id="profileList"></ul>
@@ -55,34 +117,103 @@
     <input type="text" id="model" />
     <p class="hint" data-i18n="optionsModelHint"></p>
 
-    <button id="saveProfile" data-i18n="optionsSaveProfile"></button>
-    <button id="resetForm" data-i18n="optionsNewProfile"></button>
-    <span id="status"></span>
+    <div class="buttons">
+      <button id="saveProfile" class="primary" data-i18n="optionsSaveProfile"></button>
+      <button id="resetForm" data-i18n="optionsNewProfile"></button>
+      <span id="status" class="status"></span>
+    </div>
+
+    <h2 data-i18n="optionsSelectionSection"></h2>
+
+    <div class="row">
+      <div>
+        <label for="mode" data-i18n="optionsMode"></label>
+        <select id="mode">
+          <option value="hybrid">Hybrid</option>
+          <option value="recent_scored">Recent + scoring</option>
+          <option value="steam_native">Steam native</option>
+        </select>
+      </div>
+      <div>
+        <label for="numReviews" data-i18n="optionsNumReviews"></label>
+        <input type="number" id="numReviews" min="5" max="200" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label for="dayRange" data-i18n="optionsDayRange"></label>
+        <input type="number" id="dayRange" min="1" max="365" />
+      </div>
+      <div>
+        <label for="minChars" data-i18n="optionsMinChars"></label>
+        <input type="number" id="minChars" min="0" max="500" />
+      </div>
+    </div>
+
+    <h3 data-i18n="optionsWeightsTitle"></h3>
+    <div class="grid4">
+      <div>
+        <label for="wHelpfulness" data-i18n="optionsWeightHelpfulness"></label>
+        <input type="number" id="wHelpfulness" min="0" max="1" step="0.05" />
+      </div>
+      <div>
+        <label for="wPlaytime" data-i18n="optionsWeightPlaytime"></label>
+        <input type="number" id="wPlaytime" min="0" max="1" step="0.05" />
+      </div>
+      <div>
+        <label for="wSubstance" data-i18n="optionsWeightSubstance"></label>
+        <input type="number" id="wSubstance" min="0" max="1" step="0.05" />
+      </div>
+      <div>
+        <label for="wFreshness" data-i18n="optionsWeightFreshness"></label>
+        <input type="number" id="wFreshness" min="0" max="1" step="0.05" />
+      </div>
+    </div>
+    <p class="hint" data-i18n="optionsWeightsHint"></p>
+
+    <h3 data-i18n="optionsPresetsTitle"></h3>
+    <div class="row">
+      <div>
+        <select id="presetList"></select>
+      </div>
+      <div>
+        <input type="text" id="presetName" />
+      </div>
+    </div>
+    <div class="buttons">
+      <button id="presetLoad" data-i18n="optionsPresetLoad"></button>
+      <button id="presetSave" data-i18n="optionsPresetSave"></button>
+      <button id="presetDelete" data-i18n="optionsPresetDelete"></button>
+      <button id="presetExport" data-i18n="optionsPresetExport"></button>
+      <button id="presetImportBtn" data-i18n="optionsPresetImport"></button>
+      <input type="file" id="presetImport" accept="application/json" class="hidden" />
+    </div>
 
     <h2 data-i18n="optionsGeneralSection"></h2>
-    <label for="language" data-i18n="optionsLanguage"></label>
-    <select id="language">
-      <option value="it">Italiano</option>
-      <option value="en">English</option>
-      <option value="es">Español</option>
-      <option value="fr">Français</option>
-      <option value="de">Deutsch</option>
-    </select>
-
-    <label for="mode" data-i18n="optionsMode"></label>
-    <select id="mode">
-      <option value="hybrid">Hybrid</option>
-      <option value="recent_scored">Recent + scoring</option>
-      <option value="steam_native">Steam native</option>
-    </select>
-
-    <label for="numReviews" data-i18n="optionsNumReviews"></label>
-    <input type="number" id="numReviews" min="5" max="200" />
+    <div class="row">
+      <div>
+        <label for="language" data-i18n="optionsLanguage"></label>
+        <select id="language">
+          <option value="it">Italiano</option>
+          <option value="en">English</option>
+          <option value="es">Español</option>
+          <option value="fr">Français</option>
+          <option value="de">Deutsch</option>
+        </select>
+      </div>
+      <div>
+        <label for="cacheTtl" data-i18n="optionsCacheTtl"></label>
+        <input type="number" id="cacheTtl" min="0" max="720" />
+      </div>
+    </div>
 
     <label class="check"><input type="checkbox" id="autoGenerate" /><span data-i18n="optionsAutoGenerate"></span></label>
 
-    <button id="saveGeneral" data-i18n="optionsSave"></button>
-    <span id="statusGeneral"></span>
+    <div class="buttons">
+      <button id="saveGeneral" class="primary" data-i18n="optionsSave"></button>
+      <span id="statusGeneral" class="status"></span>
+    </div>
 
     <script type="module" src="./options.ts"></script>
   </body>

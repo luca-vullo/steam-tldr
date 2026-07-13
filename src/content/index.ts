@@ -33,12 +33,12 @@ if (appid) {
     if (stored["autoGenerate"] === true) generate();
   });
 
-  function generate(): void {
+  function generate(force = false): void {
     widget.open();
     widget.setLoading();
-    send({ type: "summarize", appid: appid!, gameName }, (response) => {
+    send({ type: "summarize", appid: appid!, gameName, force }, (response) => {
       if (response.type === "summary") {
-        widget.setResult(response.summary, response.reviewsUsed);
+        widget.setResult(response.summary, response.reviewsUsed, response.createdAt);
         return;
       }
       if (response.type === "error") {

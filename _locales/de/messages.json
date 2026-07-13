@@ -1,5 +1,14 @@
 {
   "extName": { "message": "Steam TL;DR" },
   "extDescription": { "message": "KI-Zusammenfassung der aktuellen Steam-Rezensionen eines Spiels, direkt auf seiner Store-Seite." },
-  "optionsPlaceholder": { "message": "Optionen folgen in Kürze (M3)." }
+  "optionsProviderSection": { "message": "KI-Anbieter (Anthropic)" },
+  "optionsApiKey": { "message": "API-Schlüssel" },
+  "optionsApiKeyHint": { "message": "Dein persönlicher Schlüssel, nur in diesem Browser gespeichert. Wird mit niemandem außer dem Anbieter geteilt." },
+  "optionsModel": { "message": "Modell" },
+  "optionsGeneralSection": { "message": "Allgemein" },
+  "optionsLanguage": { "message": "Sprache (Oberfläche und Zusammenfassung)" },
+  "optionsMode": { "message": "Auswahlmodus für Rezensionen" },
+  "optionsNumReviews": { "message": "An das Modell gesendete Rezensionen" },
+  "optionsSave": { "message": "Speichern" },
+  "optionsSaved": { "message": "Gespeichert ✓" }
 }

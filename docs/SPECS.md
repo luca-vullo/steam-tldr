@@ -55,6 +55,8 @@ Questa è la decisione di design più importante del progetto.
 
 ### Post-MVP (v0.2+)
 
+- Paginazione del pool recensioni via `cursor` (oggi max 100 per fetch), per campioni di partenza più ampi.
+
 - Confronto "recenti vs. complessive" (le recenti divergono dal punteggio storico? es. review bombing o gioco migliorato dopo una patch).
 - Riassunto on-demand di un aspetto specifico ("cosa dicono delle performance?").
 - Supporto Firefox (WebExtensions).

@@ -37,10 +37,33 @@ export interface ReviewSelectionConfig {
   minChars: number;
 }
 
+// F3 — output strutturato del riassunto
+export interface TLDRSummary {
+  verdict: string; // una riga
+  sentiment: "positive" | "mixed" | "negative";
+  pros: string[]; // 3–5 punti ricorrenti
+  cons: string[]; // 3–5 punti ricorrenti
+  recent_changes: string | null; // note su patch/update se emergono
+  reviews_analyzed: number;
+  language: string;
+}
+
+// F7 — provider LLM
+export type ProviderId = "anthropic" | "openai" | "gemini" | "azure";
+
+export interface ProviderConfig {
+  apiKey: string;
+  model: string;
+  // solo Azure AI Foundry:
+  endpoint?: string;
+  deployment?: string;
+}
+
 // Messaggi content script ⇄ service worker
 export type Message =
   | { type: "ping"; appid: string }
-  | { type: "fetchReviews"; appid: string };
+  | { type: "fetchReviews"; appid: string }
+  | { type: "summarize"; appid: string; gameName: string };
 
 export type MessageResponse =
   | { type: "pong"; appid: string }
@@ -50,4 +73,11 @@ export type MessageResponse =
       querySummary: ReviewQuerySummary;
       poolSize: number; // recensioni nel pool prima della selezione
     }
-  | { type: "error"; message: string };
+  | {
+      type: "summary";
+      summary: TLDRSummary;
+      reviewsUsed: number;
+      poolSize: number;
+      querySummary: ReviewQuerySummary;
+    }
+  | { type: "error"; code: "missing_api_key" | "generic"; message: string };

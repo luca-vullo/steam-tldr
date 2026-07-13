@@ -1,5 +1,14 @@
 {
   "extName": { "message": "Steam TL;DR" },
   "extDescription": { "message": "AI summary of a game's recent Steam reviews, shown directly on its store page." },
-  "optionsPlaceholder": { "message": "Options coming soon (M3)." }
+  "optionsProviderSection": { "message": "AI provider (Anthropic)" },
+  "optionsApiKey": { "message": "API key" },
+  "optionsApiKeyHint": { "message": "Your personal key, stored only in this browser. Never shared with anyone but the provider." },
+  "optionsModel": { "message": "Model" },
+  "optionsGeneralSection": { "message": "General" },
+  "optionsLanguage": { "message": "Language (UI and summary)" },
+  "optionsMode": { "message": "Review selection mode" },
+  "optionsNumReviews": { "message": "Reviews sent to the model" },
+  "optionsSave": { "message": "Save" },
+  "optionsSaved": { "message": "Saved ✓" }
 }

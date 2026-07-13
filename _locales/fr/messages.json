@@ -1,5 +1,14 @@
 {
   "extName": { "message": "Steam TL;DR" },
   "extDescription": { "message": "Résumé par IA des avis récents d'un jeu, directement sur sa page du magasin Steam." },
-  "optionsPlaceholder": { "message": "Options à venir (M3)." }
+  "optionsProviderSection": { "message": "Fournisseur d'IA (Anthropic)" },
+  "optionsApiKey": { "message": "Clé API" },
+  "optionsApiKeyHint": { "message": "Votre clé personnelle, enregistrée uniquement dans ce navigateur. Jamais partagée avec quiconque d'autre que le fournisseur." },
+  "optionsModel": { "message": "Modèle" },
+  "optionsGeneralSection": { "message": "Général" },
+  "optionsLanguage": { "message": "Langue (interface et résumé)" },
+  "optionsMode": { "message": "Mode de sélection des avis" },
+  "optionsNumReviews": { "message": "Avis envoyés au modèle" },
+  "optionsSave": { "message": "Enregistrer" },
+  "optionsSaved": { "message": "Enregistré ✓" }
 }

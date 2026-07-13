@@ -21,14 +21,17 @@ function injectPanel(panelEl: HTMLElement): void {
   const glance = document.querySelector(".rightcol .glance_ctn");
   if (glance) {
     glance.after(panelEl);
+    console.log("[steam-tldr] pannello iniettato sotto il box recensioni");
     return;
   }
   const description = document.querySelector("#game_area_description");
   if (description) {
     description.before(panelEl);
+    console.log("[steam-tldr] pannello iniettato sopra la descrizione (fallback)");
     return;
   }
   (document.querySelector(".page_content_ctn") ?? document.body).append(panelEl);
+  console.log("[steam-tldr] pannello iniettato a fine pagina (fallback)");
 }
 
 function send(message: Message, onResponse: (r: MessageResponse) => void): void {

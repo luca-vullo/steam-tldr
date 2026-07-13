@@ -28,8 +28,8 @@ export async function saveSelectionConfig(config: ReviewSelectionConfig): Promis
   await chrome.storage.local.set({ selectionConfig: config });
 }
 
-// F7 — profili provider: l'utente ne può definire quanti vuole (stesso
-// protocollo, endpoint diversi) e sceglie quello attivo.
+// F7 — provider profiles: users can define any number of them (same protocol,
+// different endpoints) and pick the active one.
 export interface ProviderSettings {
   activeProfileId: string;
   profiles: ProviderProfile[];
@@ -70,7 +70,7 @@ export function activeProfile(settings: ProviderSettings): ProviderProfile {
   );
 }
 
-// F6 — durata della cache dei riassunti (0 = disattivata)
+// F6 — summary cache duration (0 = disabled)
 export const DEFAULT_CACHE_TTL_HOURS = 24;
 
 export async function loadCacheTtlHours(): Promise<number> {
@@ -83,7 +83,7 @@ export async function saveCacheTtlHours(hours: number): Promise<void> {
   await chrome.storage.local.set({ cacheTtlHours: hours });
 }
 
-// F9 — preset delle impostazioni di selezione
+// F9 — selection configuration presets
 export type PresetMap = Record<string, ReviewSelectionConfig>;
 
 export async function loadPresets(): Promise<PresetMap> {
@@ -95,7 +95,7 @@ export async function savePresets(presets: PresetMap): Promise<void> {
   await chrome.storage.local.set({ selectionPresets: presets });
 }
 
-// F8 — lingua di output/UI
+// F8 — output/UI language
 export async function loadLanguage(): Promise<LanguageCode> {
   const stored = await chrome.storage.local.get("language");
   const lang = stored["language"];

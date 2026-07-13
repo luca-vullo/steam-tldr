@@ -3,7 +3,7 @@ import { parseTLDRSummary, TLDR_JSON_SCHEMA, type LLMProvider, type SummarizeReq
 
 const DEFAULT_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
 
-// Google Gemini API: JSON garantito via responseMimeType + responseSchema.
+// Google Gemini API: JSON guaranteed via responseMimeType + responseSchema.
 export const geminiProvider: LLMProvider = {
   kind: "gemini",
 
@@ -11,15 +11,15 @@ export const geminiProvider: LLMProvider = {
     const baseUrl = (profile.baseUrl || DEFAULT_BASE_URL).replace(/\/$/, "");
     const url = `${baseUrl}/models/${profile.model}:generateContent`;
 
-    // Lo schema Gemini non accetta anyOf/additionalProperties: variante con
-    // recent_changes stringa semplice (vuota = nessuna nota).
+    // Gemini's schema dialect doesn't accept anyOf/additionalProperties:
+    // variant with recent_changes as a plain string (empty = no notes).
     const schema = {
       type: "object",
       properties: {
         ...Object.fromEntries(
           Object.entries(TLDR_JSON_SCHEMA.properties).map(([key, value]) =>
             key === "recent_changes"
-              ? [key, { type: "string", description: "Note su patch recenti, stringa vuota se assenti" }]
+              ? [key, { type: "string", description: "Notes about recent patches, empty string if none" }]
               : [key, value],
           ),
         ),
@@ -52,10 +52,10 @@ export const geminiProvider: LLMProvider = {
     };
     const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("");
     if (!text) {
-      throw new Error(`${profile.name}: risposta senza contenuto`);
+      throw new Error(`${profile.name}: response without content`);
     }
     const summary = parseTLDRSummary(text);
-    // normalizza la variante di schema: stringa vuota -> null
+    // normalize the schema variant: empty string -> null
     if (typeof summary.recent_changes === "string" && summary.recent_changes.trim() === "") {
       summary.recent_changes = null;
     }

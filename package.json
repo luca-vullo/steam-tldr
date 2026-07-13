@@ -2,7 +2,7 @@
   "name": "steam-tldr",
   "version": "0.1.0",
   "private": true,
-  "description": "Estensione Chrome che genera un TL;DR delle recensioni recenti di un gioco sulla sua pagina Steam",
+  "description": "Chrome extension that generates an AI TL;DR of a game's recent Steam reviews, right on its store page",
   "type": "module",
   "scripts": {
     "dev": "vite",

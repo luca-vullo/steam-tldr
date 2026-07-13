@@ -1,7 +1,7 @@
-// F6 — cache dei riassunti su chrome.storage.local.
-// Chiave: summary:{appid}:{lang}:{profileId}:{model}:{selectionHash} — cambiare
-// lingua, profilo, modello o configurazione di selezione rigenera invece di
-// servire un riassunto calcolato con altri parametri.
+// F6 — summary cache on chrome.storage.local.
+// Key: summary:{appid}:{lang}:{profileId}:{model}:{selectionHash} — changing
+// language, profile, model or selection configuration regenerates instead of
+// serving a summary computed with different parameters.
 import type {
   ReviewQuerySummary,
   ReviewSelectionConfig,
@@ -17,10 +17,10 @@ export interface CachedSummary {
 }
 
 const PREFIX = "summary:";
-const MAX_ENTRIES = 200; // chrome.storage.local ~10MB: eviction LRU oltre questa soglia
+const MAX_ENTRIES = 200; // chrome.storage.local ~10MB: LRU eviction beyond this
 
 export function selectionHash(config: ReviewSelectionConfig): string {
-  // stringify stabile (chiavi ordinate) + djb2
+  // stable stringify (sorted keys) + djb2
   const stable = JSON.stringify(config, Object.keys(flatten(config)).sort());
   let hash = 5381;
   for (let i = 0; i < stable.length; i++) {
@@ -52,7 +52,7 @@ export function cacheKey(
 }
 
 export async function getCached(key: string, ttlHours: number): Promise<CachedSummary | null> {
-  if (ttlHours <= 0) return null; // cache disattivata
+  if (ttlHours <= 0) return null; // cache disabled
   const stored = await chrome.storage.local.get(key);
   const entry = stored[key] as CachedSummary | undefined;
   if (!entry) return null;

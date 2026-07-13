@@ -11,7 +11,7 @@ export interface SelectionResult {
   poolSize: number;
 }
 
-// Soglia sotto la quale steam_native ripiega su filter=recent
+// Threshold below which steam_native falls back to filter=recent
 const NATIVE_FALLBACK_MIN = 10;
 
 export async function collectReviews(
@@ -51,7 +51,7 @@ export async function collectReviews(
         }));
       }
       const pool = reviews.filter((r) => r.text.length >= config.minChars);
-      // ordine di Steam, nessuno scoring
+      // Steam's own ordering, no client-side scoring
       return {
         selected: pool.slice(0, config.numReviews),
         querySummary,
@@ -69,7 +69,7 @@ function dedupe(reviews: SteamReview[]): SteamReview[] {
   return [...seen.values()];
 }
 
-// Scoring pesato + selezione che preserva la proporzione reale positive/negative
+// Weighted scoring + selection that preserves the pool's real positive/negative ratio
 function selectScored(
   pool: SteamReview[],
   config: ReviewSelectionConfig,
@@ -112,8 +112,8 @@ function scoreReview(
   const substance = Math.min(1, r.text.length / 1000);
   const ageDays = Math.max(0, (nowSec - r.timestampCreated) / 86400);
   const freshness = Math.max(0, 1 - ageDays / config.dayRange);
-  // Senza voti weighted_vote_score è il default 0.5: nessun segnale di
-  // utilità, quindi il suo peso si redistribuisce sugli altri componenti.
+  // Without votes, weighted_vote_score is the neutral 0.5 default: no real
+  // helpfulness signal, so its weight is redistributed to the other components.
   const helpfulness = r.votesUp > 0 ? clamp01(r.weightedVoteScore) : null;
 
   let score =

@@ -1,7 +1,7 @@
 import type { Message, MessageResponse } from "../shared/types";
 import { createWidget } from "./panel";
 
-// F1 — estrae l'appid da store.steampowered.com/app/{appid}/...
+// F1 — extracts the appid from store.steampowered.com/app/{appid}/...
 function extractAppId(url: string): string | null {
   const match = url.match(/\/app\/(\d+)/);
   return match?.[1] ?? null;
@@ -22,13 +22,13 @@ const appid = extractAppId(location.href);
 if (appid) {
   const gameName = extractGameName();
 
-  // F4 — widget indipendente dal layout della pagina: linguetta fissa sul
-  // bordo destro + drawer. Nessun selettore del markup di Steam.
+  // F4 — widget independent from the page layout: fixed tab on the right
+  // edge + drawer. No Steam markup selectors.
   const widget = createWidget(gameName, generate);
   widget.setIdle();
-  console.log("[steam-tldr] widget pronto (linguetta sul bordo destro)");
+  console.log("[steam-tldr] widget ready (tab on the right edge)");
 
-  // F5 — attivazione automatica opzionale (default: click manuale)
+  // F5 — optional automatic activation (default: manual click)
   chrome.storage.local.get("autoGenerate").then((stored) => {
     if (stored["autoGenerate"] === true) generate();
   });

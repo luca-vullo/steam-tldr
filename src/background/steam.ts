@@ -24,7 +24,7 @@ interface RawResponse {
 
 export interface FetchReviewsParams {
   filter: "recent" | "all";
-  dayRange?: number; // solo con filter=all
+  dayRange?: number; // only with filter=all
   numPerPage?: number; // max 100
 }
 
@@ -35,7 +35,7 @@ export async function fetchSteamReviews(
   const query = new URLSearchParams({
     json: "1",
     filter: params.filter,
-    language: "all", // input multilingue: la lingua (F8) governa solo l'output
+    language: "all", // multilingual input: language (F8) governs output only
     num_per_page: String(params.numPerPage ?? 100),
     purchase_type: "all",
   });
@@ -65,7 +65,7 @@ export async function fetchSteamReviews(
 }
 
 function normalizeReview(raw: RawReview): SteamReview {
-  // weighted_vote_score: stringa con filter=all, numero con filter=recent
+  // weighted_vote_score: string with filter=all, number with filter=recent
   const score = Number(raw.weighted_vote_score);
   return {
     id: raw.recommendationid,

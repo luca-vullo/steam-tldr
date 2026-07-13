@@ -1,14 +1,13 @@
-// F4 — widget TL;DR indipendente dal layout di Steam: una linguetta fissa sul
-// bordo destro apre un drawer laterale. Nessuna dipendenza dal markup della
-// pagina (requisito di resilienza). Vanilla TS, classi prefissate .stldr-;
-// il riassunto è SEMPRE renderizzato come testo (mai innerHTML da contenuto
-// generato).
+// F4 — TL;DR widget independent from Steam's layout: a fixed tab on the
+// right edge opens a side drawer. No dependency on the page markup
+// (resilience requirement). Vanilla TS, .stldr- prefixed classes; the
+// summary is ALWAYS rendered as text (never innerHTML from generated content).
 import type { TLDRSummary } from "../shared/types";
 
 const t = (key: string, subs?: string[]) => chrome.i18n.getMessage(key, subs);
 
 const SENTIMENT_STYLE: Record<TLDRSummary["sentiment"], { labelKey: string; color: string }> = {
-  // Colori delle valutazioni recensioni di Steam
+  // Steam's review rating colors
   positive: { labelKey: "sentimentPositive", color: "#66c0f4" },
   mixed: { labelKey: "sentimentMixed", color: "#b9a074" },
   negative: { labelKey: "sentimentNegative", color: "#a34c25" },
@@ -174,13 +173,13 @@ export function createWidget(
   const style = document.createElement("style");
   style.textContent = CSS;
 
-  // Linguetta fissa sul bordo destro
+  // Fixed tab on the right edge
   const tab = document.createElement("button");
   tab.className = "stldr-tab";
   tab.textContent = "TL;DR";
   tab.title = t("panelGenerate");
 
-  // Drawer laterale
+  // Side drawer
   const drawer = document.createElement("div");
   drawer.className = "stldr-drawer";
 
@@ -232,7 +231,7 @@ export function createWidget(
     const btn = document.createElement("button");
     btn.className = "stldr-regenerate";
     btn.textContent = t("panelRegenerate");
-    // Rigenera bypassa la cache (force)
+    // Regenerate bypasses the cache (force)
     btn.addEventListener("click", () => onGenerate(true));
     actions.insertBefore(btn, gear);
   }

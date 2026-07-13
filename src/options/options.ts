@@ -1,5 +1,5 @@
-// Opzioni: profili provider (F7), selezione recensioni con pesi e preset
-// (F2/F9), lingua (F8), cache (F6), attivazione automatica (F5).
+// Options: provider profiles (F7), review selection with weights and presets
+// (F2/F9), language (F8), cache (F6), automatic activation (F5).
 import {
   DEFAULT_ANTHROPIC_MODEL,
   DEFAULT_SELECTION_CONFIG,
@@ -24,7 +24,7 @@ import type {
 } from "../shared/types";
 import type { LanguageCode } from "../shared/i18n";
 
-// ---------- preset UI dei tipi di profilo ----------
+// ---------- profile-type UI presets ----------
 interface KindPreset {
   kind: ProviderKind;
   baseUrl: "fixed" | "required" | "editable";
@@ -65,9 +65,9 @@ const presetNameInput = $<HTMLInputElement>("presetName");
 
 let settings: ProviderSettings = { activeProfileId: "", profiles: [] };
 let presets: PresetMap = {};
-let editingId: string | null = null; // null = nuovo profilo
+let editingId: string | null = null; // null = new profile
 
-// ---------- profili provider ----------
+// ---------- provider profiles ----------
 
 function applyKindPreset(): void {
   const preset = KIND_PRESETS[presetSelect.value]!;
@@ -174,7 +174,7 @@ async function saveProfile(): Promise<void> {
     return;
   }
 
-  // Endpoint custom: chiedi il permesso host SOLO per quell'origin
+  // Custom endpoint: request the host permission ONLY for that origin
   if (baseUrl && !(await requestOriginPermission(baseUrl))) {
     flash(statusEl, chrome.i18n.getMessage("optionsPermissionDenied"), "#cd5444");
     return;
@@ -204,7 +204,7 @@ async function persistProfiles(): Promise<void> {
   renderProfiles();
 }
 
-// ---------- selezione recensioni: form <-> config ----------
+// ---------- review selection: form <-> config ----------
 
 function readSelectionForm(): ReviewSelectionConfig {
   const num = (id: string, fallback: number) => {
@@ -240,7 +240,7 @@ function clamp01(n: number): number {
   return Math.min(1, Math.max(0, n));
 }
 
-// ---------- preset (F9) ----------
+// ---------- presets (F9) ----------
 
 function renderPresetList(): void {
   presetListSelect.replaceChildren();
@@ -297,7 +297,7 @@ async function presetImport(file: File): Promise<void> {
   try {
     const parsed = JSON.parse(await file.text()) as { selectionPresets?: PresetMap };
     const incoming = parsed.selectionPresets;
-    if (!incoming || typeof incoming !== "object") throw new Error("formato non valido");
+    if (!incoming || typeof incoming !== "object") throw new Error("invalid format");
     for (const [name, config] of Object.entries(incoming)) {
       if (name !== DEFAULT_PRESET_NAME) {
         presets[name] = { ...DEFAULT_SELECTION_CONFIG, ...config, weights: { ...DEFAULT_SELECTION_CONFIG.weights, ...config.weights } };
@@ -311,7 +311,7 @@ async function presetImport(file: File): Promise<void> {
   }
 }
 
-// ---------- generali ----------
+// ---------- general ----------
 
 async function saveGeneral(): Promise<void> {
   await saveSelectionConfig(readSelectionForm());

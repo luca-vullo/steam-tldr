@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(
           .catch((err: unknown) =>
             sendResponse({ type: "error", code: "generic", message: String(err) }),
           );
-        return true; // risposta asincrona
+        return true; // async response
 
       case "summarize":
         handleSummarize(message.appid, message.gameName, message.force === true)
@@ -52,7 +52,7 @@ async function handleSummarize(
   const selectionConfig = await loadSelectionConfig();
   const language = await loadLanguage();
 
-  // F6 — cache first ("Rigenera" la bypassa con force)
+  // F6 — cache first ("Regenerate" bypasses it with force)
   const key = cacheKey(appid, language, profile.id, profile.model, selectionHash(selectionConfig));
   const ttlHours = await loadCacheTtlHours();
   if (!force) {
@@ -70,13 +70,13 @@ async function handleSummarize(
     }
   }
 
-  // La chiave può mancare solo sugli endpoint locali (openai_compat su localhost)
+  // The key may be empty only for local endpoints (openai_compat on localhost)
   const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(profile.baseUrl);
   if (!profile.apiKey && !isLocal) {
     return {
       type: "error",
       code: "missing_api_key",
-      message: `Chiave API mancante per il profilo "${profile.name}": inseriscila nella pagina opzioni`,
+      message: `Missing API key for profile "${profile.name}": set it in the options page`,
     };
   }
 

@@ -1,6 +1,6 @@
-// Recensione normalizzata dall'endpoint appreviews.
-// Nota: weighted_vote_score arriva come stringa con filter=all e come numero
-// con filter=recent; 0.5 è il default neutro di Steam per recensioni senza voti.
+// Review normalized from the appreviews endpoint.
+// Note: weighted_vote_score comes back as a string with filter=all and as a
+// number with filter=recent; 0.5 is Steam's neutral default for unvoted reviews.
 export interface SteamReview {
   id: string; // recommendationid
   text: string;
@@ -8,7 +8,7 @@ export interface SteamReview {
   votesUp: number;
   weightedVoteScore: number; // 0–1
   playtimeForeverMin: number;
-  timestampCreated: number; // unix, secondi
+  timestampCreated: number; // unix, seconds
   language: string;
 }
 
@@ -19,7 +19,7 @@ export interface ReviewQuerySummary {
   totalReviews: number;
 }
 
-// F2 — configurazione del motore di selezione (salvabile come preset, F9)
+// F2 — review selection engine configuration (savable as a preset, F9)
 export type SelectionMode = "hybrid" | "recent_scored" | "steam_native";
 
 export interface SelectionWeights {
@@ -37,34 +37,34 @@ export interface ReviewSelectionConfig {
   minChars: number;
 }
 
-// F3 — output strutturato del riassunto
+// F3 — structured summary output
 export interface TLDRSummary {
-  verdict: string; // una riga
+  verdict: string; // one line
   sentiment: "positive" | "mixed" | "negative";
-  pros: string[]; // 3–5 punti ricorrenti
-  cons: string[]; // 3–5 punti ricorrenti
-  recent_changes: string | null; // note su patch/update se emergono
+  pros: string[]; // 3–5 recurring points
+  cons: string[]; // 3–5 recurring points
+  recent_changes: string | null; // notes about patches/updates if any emerge
   reviews_analyzed: number;
   language: string;
 }
 
-// F7 — profili provider. Un profilo = protocollo API + endpoint + chiave +
-// modello. Lo stesso protocollo copre più deployment: "anthropic" vale sia per
-// api.anthropic.com sia per Claude su Azure AI Foundry (baseUrl custom);
-// "openai_compat" copre OpenAI, Azure AI Foundry (endpoint OpenAI v1) e i
-// server locali OpenAI-compatibili (Ollama, LM Studio, ...).
+// F7 — provider profiles. A profile = API protocol + endpoint + key + model.
+// One protocol covers multiple deployments: "anthropic" works for both
+// api.anthropic.com and Claude on Azure AI Foundry (custom baseUrl);
+// "openai_compat" covers OpenAI, Azure AI Foundry (OpenAI v1 endpoint) and
+// local OpenAI-compatible servers (Ollama, LM Studio, ...).
 export type ProviderKind = "anthropic" | "openai_compat" | "gemini";
 
 export interface ProviderProfile {
-  id: string; // generato
-  name: string; // etichetta scelta dall'utente
+  id: string; // generated
+  name: string; // user-chosen label
   kind: ProviderKind;
-  baseUrl: string; // "" = endpoint di default del protocollo
-  apiKey: string; // può essere vuota per server locali
-  model: string; // ID modello, o nome del deployment su Azure Foundry
+  baseUrl: string; // "" = the protocol's default endpoint
+  apiKey: string; // may be empty for local servers
+  model: string; // model ID, or deployment name on Azure Foundry
 }
 
-// Messaggi content script ⇄ service worker
+// Content script ⇄ service worker messages
 export type Message =
   | { type: "ping"; appid: string }
   | { type: "fetchReviews"; appid: string }
@@ -76,7 +76,7 @@ export type MessageResponse =
       type: "reviews";
       reviews: SteamReview[];
       querySummary: ReviewQuerySummary;
-      poolSize: number; // recensioni nel pool prima della selezione
+      poolSize: number; // pool size before selection
     }
   | {
       type: "summary";
@@ -85,6 +85,6 @@ export type MessageResponse =
       poolSize: number;
       querySummary: ReviewQuerySummary;
       fromCache: boolean;
-      createdAt: number; // epoch ms della generazione
+      createdAt: number; // generation time, epoch ms
     }
   | { type: "error"; code: "missing_api_key" | "generic"; message: string };

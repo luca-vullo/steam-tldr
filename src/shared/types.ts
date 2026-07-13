@@ -1,5 +1,53 @@
-// Messaggi content script ⇄ service worker. Per M0 solo il ping di verifica;
-// i messaggi reali (fetch recensioni, riassunto) arrivano con M1/M2.
-export type Message = { type: "ping"; appid: string };
+// Recensione normalizzata dall'endpoint appreviews.
+// Nota: weighted_vote_score arriva come stringa con filter=all e come numero
+// con filter=recent; 0.5 è il default neutro di Steam per recensioni senza voti.
+export interface SteamReview {
+  id: string; // recommendationid
+  text: string;
+  votedUp: boolean;
+  votesUp: number;
+  weightedVoteScore: number; // 0–1
+  playtimeForeverMin: number;
+  timestampCreated: number; // unix, secondi
+  language: string;
+}
 
-export type MessageResponse = { type: "pong"; appid: string };
+export interface ReviewQuerySummary {
+  reviewScoreDesc: string;
+  totalPositive: number;
+  totalNegative: number;
+  totalReviews: number;
+}
+
+// F2 — configurazione del motore di selezione (salvabile come preset, F9)
+export type SelectionMode = "hybrid" | "recent_scored" | "steam_native";
+
+export interface SelectionWeights {
+  helpfulness: number;
+  playtime: number;
+  substance: number;
+  freshness: number;
+}
+
+export interface ReviewSelectionConfig {
+  mode: SelectionMode;
+  numReviews: number;
+  dayRange: number;
+  weights: SelectionWeights;
+  minChars: number;
+}
+
+// Messaggi content script ⇄ service worker
+export type Message =
+  | { type: "ping"; appid: string }
+  | { type: "fetchReviews"; appid: string };
+
+export type MessageResponse =
+  | { type: "pong"; appid: string }
+  | {
+      type: "reviews";
+      reviews: SteamReview[];
+      querySummary: ReviewQuerySummary;
+      poolSize: number; // recensioni nel pool prima della selezione
+    }
+  | { type: "error"; message: string };

@@ -2,9 +2,14 @@
 // right edge opens a side drawer. No dependency on the page markup
 // (resilience requirement). Vanilla TS, .stldr- prefixed classes; the
 // summary is ALWAYS rendered as text (never innerHTML from generated content).
-import type { TLDRSummary } from "../shared/types";
+import type { Message, TLDRSummary } from "../shared/types";
 
 const t = (key: string, subs?: string[]) => chrome.i18n.getMessage(key, subs);
+
+function openOptions(): void {
+  const message: Message = { type: "openOptions" };
+  chrome.runtime.sendMessage(message);
+}
 
 const SENTIMENT_STYLE: Record<TLDRSummary["sentiment"], { labelKey: string; color: string }> = {
   // Steam's review rating colors
@@ -146,8 +151,16 @@ const CSS = `
 }
 .stldr-changes b { color: #66c0f4; font-weight: 700; display: block; font-size: 11px; text-transform: uppercase; margin-bottom: 2px; }
 .stldr-error { color: #cd5444; padding: 6px 0; }
-.stldr-options-link { color: #66c0f4; text-decoration: none; }
-.stldr-options-link:hover { color: #fff; }
+.stldr-options-link {
+  border: none;
+  background: rgba(103, 193, 245, 0.15);
+  border-radius: 2px;
+  padding: 5px 12px;
+  cursor: pointer;
+  color: #66c0f4;
+  font-size: 13px;
+}
+.stldr-options-link:hover { color: #fff; background: rgba(103, 193, 245, 0.35); }
 .stldr-footer {
   margin-top: 14px;
   padding-top: 10px;
@@ -193,12 +206,11 @@ export function createWidget(
   title.append(ai, document.createTextNode(t("panelTitle")));
   const actions = document.createElement("div");
   actions.className = "stldr-actions";
-  const gear = document.createElement("a");
+  const gear = document.createElement("button");
   gear.className = "stldr-gear";
-  gear.href = chrome.runtime.getURL("src/options/options.html");
-  gear.target = "_blank";
   gear.textContent = "⚙";
   gear.title = t("panelOpenOptions");
+  gear.addEventListener("click", openOptions);
   const closeBtn = document.createElement("button");
   closeBtn.className = "stldr-close";
   closeBtn.textContent = "✕";
@@ -309,11 +321,10 @@ export function createWidget(
     body.append(error);
 
     if (missingKey) {
-      const link = document.createElement("a");
+      const link = document.createElement("button");
       link.className = "stldr-options-link";
-      link.href = chrome.runtime.getURL("src/options/options.html");
-      link.target = "_blank";
       link.textContent = t("panelOpenOptions");
+      link.addEventListener("click", openOptions);
       body.append(link);
     } else {
       console.error("[steam-tldr]", message);

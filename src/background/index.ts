@@ -32,6 +32,10 @@ chrome.runtime.onMessage.addListener(
             sendResponse({ type: "error", code: "generic", message: String(err) }),
           );
         return true;
+
+      case "openOptions":
+        void chrome.runtime.openOptionsPage();
+        return false;
     }
   },
 );

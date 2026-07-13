@@ -68,7 +68,11 @@ export interface ProviderProfile {
 export type Message =
   | { type: "ping"; appid: string }
   | { type: "fetchReviews"; appid: string }
-  | { type: "summarize"; appid: string; gameName: string; force?: boolean };
+  | { type: "summarize"; appid: string; gameName: string; force?: boolean }
+  // chrome-extension:// pages can't be navigated to from a web page
+  // (ERR_BLOCKED_BY_CLIENT), so the widget asks the service worker to open
+  // the options via chrome.runtime.openOptionsPage()
+  | { type: "openOptions" };
 
 export type MessageResponse =
   | { type: "pong"; appid: string }

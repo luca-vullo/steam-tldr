@@ -17,7 +17,10 @@ export const openAICompatProvider: LLMProvider = {
   kind: "openai_compat",
 
   async summarize(request: SummarizeRequest, profile: ProviderProfile): Promise<TLDRSummary> {
-    const baseUrl = (profile.baseUrl || DEFAULT_BASE_URL).replace(/\/$/, "");
+    // Tollera l'URL completo incollato dall'utente: il path lo aggiungiamo noi
+    const baseUrl = (profile.baseUrl || DEFAULT_BASE_URL)
+      .replace(/\/chat\/completions\/?$/, "")
+      .replace(/\/$/, "");
     const url = `${baseUrl}/chat/completions`;
 
     const headers: Record<string, string> = { "Content-Type": "application/json" };

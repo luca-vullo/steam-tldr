@@ -14,7 +14,7 @@ export const anthropicProvider: LLMProvider = {
     const client = profile.baseUrl
       ? new AnthropicFoundry({
           apiKey: profile.apiKey,
-          baseURL: profile.baseUrl,
+          baseURL: normalizeBaseUrl(profile.baseUrl),
           dangerouslyAllowBrowser: true,
         })
       : new Anthropic({
@@ -47,3 +47,9 @@ export const anthropicProvider: LLMProvider = {
     return parseTLDRSummary(text.text);
   },
 };
+
+// L'SDK aggiunge da solo "v1/messages" alla baseURL: se l'utente incolla
+// l'URL completo dell'endpoint, il suffisso va rimosso (altrimenti 404).
+function normalizeBaseUrl(baseUrl: string): string {
+  return baseUrl.replace(/\/(v1\/)?(messages)?\/?$/, "") + "/";
+}

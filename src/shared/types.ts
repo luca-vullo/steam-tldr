@@ -48,15 +48,20 @@ export interface TLDRSummary {
   language: string;
 }
 
-// F7 — provider LLM
-export type ProviderId = "anthropic" | "openai" | "gemini" | "azure";
+// F7 — profili provider. Un profilo = protocollo API + endpoint + chiave +
+// modello. Lo stesso protocollo copre più deployment: "anthropic" vale sia per
+// api.anthropic.com sia per Claude su Azure AI Foundry (baseUrl custom);
+// "openai_compat" copre OpenAI, Azure AI Foundry (endpoint OpenAI v1) e i
+// server locali OpenAI-compatibili (Ollama, LM Studio, ...).
+export type ProviderKind = "anthropic" | "openai_compat" | "gemini";
 
-export interface ProviderConfig {
-  apiKey: string;
-  model: string;
-  // solo Azure AI Foundry:
-  endpoint?: string;
-  deployment?: string;
+export interface ProviderProfile {
+  id: string; // generato
+  name: string; // etichetta scelta dall'utente
+  kind: ProviderKind;
+  baseUrl: string; // "" = endpoint di default del protocollo
+  apiKey: string; // può essere vuota per server locali
+  model: string; // ID modello, o nome del deployment su Azure Foundry
 }
 
 // Messaggi content script ⇄ service worker

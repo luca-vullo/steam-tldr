@@ -1,20 +1,29 @@
 import Anthropic from "@anthropic-ai/sdk";
-import type { ProviderConfig, TLDRSummary } from "../../shared/types";
+import AnthropicFoundry from "@anthropic-ai/foundry-sdk";
+import type { ProviderProfile, TLDRSummary } from "../../shared/types";
 import { parseTLDRSummary, TLDR_JSON_SCHEMA, type LLMProvider, type SummarizeRequest } from "./types";
 
+// Protocollo Anthropic Messages: copre api.anthropic.com e Claude deployato
+// su Azure AI Foundry (baseUrl dell'endpoint, model = nome del deployment).
 export const anthropicProvider: LLMProvider = {
-  id: "anthropic",
+  kind: "anthropic",
 
-  async summarize(request: SummarizeRequest, config: ProviderConfig): Promise<TLDRSummary> {
+  async summarize(request: SummarizeRequest, profile: ProviderProfile): Promise<TLDRSummary> {
     // La chiave è dell'utente, inserita nelle opzioni: non c'è nulla da
     // nascondere dietro un backend, quindi la chiamata parte dal service worker.
-    const client = new Anthropic({
-      apiKey: config.apiKey,
-      dangerouslyAllowBrowser: true,
-    });
+    const client = profile.baseUrl
+      ? new AnthropicFoundry({
+          apiKey: profile.apiKey,
+          baseURL: profile.baseUrl,
+          dangerouslyAllowBrowser: true,
+        })
+      : new Anthropic({
+          apiKey: profile.apiKey,
+          dangerouslyAllowBrowser: true,
+        });
 
     const response = await client.messages.create({
-      model: config.model,
+      model: profile.model,
       max_tokens: 4000,
       thinking: { type: "adaptive" },
       system: request.system,

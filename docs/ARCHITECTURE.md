@@ -38,11 +38,10 @@ steam-tldr/
 │   │   ├── steam.ts          # client endpoint appreviews
 │   │   ├── summarizer.ts     # prompt + orchestrazione (provider-agnostico)
 │   │   ├── providers/
-│   │   │   ├── types.ts      # interfaccia LLMProvider + config
-│   │   │   ├── anthropic.ts  # adapter Claude API (default)
-│   │   │   ├── openai.ts     # adapter OpenAI
-│   │   │   ├── gemini.ts     # adapter Google Gemini
-│   │   │   └── azure.ts      # adapter Azure AI Foundry
+│   │   │   ├── types.ts      # interfaccia LLMProvider, schema TLDR, parsing
+│   │   │   ├── anthropic.ts  # protocollo Anthropic (API + Azure Foundry)
+│   │   │   ├── openai.ts     # protocollo OpenAI-compatibile (OpenAI/Azure/locali)
+│   │   │   └── gemini.ts     # Google Gemini
 │   │   └── cache.ts          # cache TTL su chrome.storage.local
 │   ├── content/
 │   │   ├── index.ts          # rilevamento appid, ciclo di vita
@@ -79,9 +78,9 @@ steam-tldr/
     "https://generativelanguage.googleapis.com/*"
   ],
   "optional_host_permissions": [
-    "https://*.openai.azure.com/*",
-    "https://*.services.ai.azure.com/*",
-    "https://*.cognitiveservices.azure.com/*"
+    "https://*/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*"
   ],
   "content_scripts": [{
     "matches": ["https://store.steampowered.com/app/*"],
@@ -148,39 +147,41 @@ Politica d'uso: al massimo 2 richieste per visita di pagina (1 nelle modalità n
 
 ## 4. Riassunto: livello provider LLM
 
-### Interfaccia comune (F7)
+### Profili provider (F7)
 
-Il summarizer è provider-agnostico: costruisce il prompt e delega la chiamata a un adapter che implementa un'interfaccia unica. Il provider attivo e le relative configurazioni vivono in `chrome.storage.local`; le chiavi degli altri provider restano salvate quando si cambia provider.
+Il summarizer è provider-agnostico: costruisce il prompt e delega la chiamata a un adapter **per protocollo**. L'utente definisce **profili** (protocollo + endpoint + chiave + modello) e sceglie quello attivo; i profili vivono in `chrome.storage.local`.
 
 ```ts
-interface LLMProvider {
-  id: "anthropic" | "openai" | "gemini" | "azure";
-  summarize(req: SummarizeRequest): Promise<TLDRSummary>;
+type ProviderKind = "anthropic" | "openai_compat" | "gemini";
+
+interface ProviderProfile {
+  id: string;
+  name: string;     // etichetta scelta dall'utente
+  kind: ProviderKind;
+  baseUrl: string;  // "" = endpoint di default del protocollo
+  apiKey: string;   // può essere vuota per server locali
+  model: string;    // ID modello, o nome del deployment su Azure Foundry
 }
 
-interface ProviderConfig {
-  apiKey: string;
-  model: string;
-  // solo Azure AI Foundry:
-  endpoint?: string;      // https://{risorsa}.services.ai.azure.com/...
-  deployment?: string;
+interface LLMProvider {
+  kind: ProviderKind;
+  summarize(req: SummarizeRequest, profile: ProviderProfile): Promise<TLDRSummary>;
 }
 ```
 
-Ogni adapter è responsabile di ottenere un JSON conforme allo schema `TLDRSummary` con il meccanismo nativo del provider; a valle, un'unica validazione dello schema con un retry in caso di output non conforme.
+Ogni adapter è responsabile di ottenere un JSON conforme allo schema `TLDRSummary` con il meccanismo nativo del protocollo; a valle, un'unica validazione dello schema.
 
-| Provider | Auth | Output strutturato | Note |
+| Protocollo | Copre | Client | Output strutturato |
 |---|---|---|---|
-| **Anthropic** (default) | chiave API utente | Structured outputs (`output_config.format` con JSON schema) | Vedi adapter sotto |
-| OpenAI | chiave API utente | `response_format: json_schema` (strict) | Modello a scelta dell'utente (campo libero con suggerimenti) |
-| Google Gemini | chiave API utente | `responseMimeType: application/json` + `responseSchema` | Idem |
-| Azure AI Foundry | chiave + endpoint + deployment dell'utente | Dipende dal modello deployato: `json_schema` sui deployment OpenAI-compatibili, altrimenti fallback a prompt JSON + validazione | L'host permission per l'endpoint è **opzionale** nel manifest e richiesta a runtime (`chrome.permissions.request`) quando l'utente configura Azure, perché l'hostname è per-risorsa |
+| `anthropic` | Claude API (default); **Claude su Azure AI Foundry** (baseUrl = endpoint risorsa, model = nome deployment) | `@anthropic-ai/sdk`; con baseUrl `@anthropic-ai/foundry-sdk` (auth Azure) | Structured outputs (`output_config.format` con JSON schema) |
+| `openai_compat` | OpenAI ufficiale; **Azure AI Foundry** (endpoint OpenAI v1); **modelli locali** (Ollama `http://localhost:11434/v1`, LM Studio, ...) | `fetch` diretto su `{baseUrl}/chat/completions` (header `Authorization: Bearer` + `api-key` per compatibilità Azure) | `response_format: json_schema` strict; se l'endpoint lo rifiuta (400), retry con vincolo JSON nel prompt + estrazione/validazione |
+| `gemini` | Google Gemini API | `fetch` diretto su `generateContent` | `responseMimeType: application/json` + `responseSchema` (variante senza `anyOf`) |
 
-Scelta SDK per adapter (da confermare in M5 in base al peso del bundle): SDK ufficiali dove pratici, altrimenti `fetch` diretto contro l'API REST del provider dal service worker.
+Permessi host: gli endpoint fissi (Anthropic, OpenAI, Gemini) sono in `host_permissions`; gli endpoint scelti dall'utente (Azure, locali) sono coperti da `optional_host_permissions` ampie, ma il permesso viene richiesto a runtime **solo per l'origin del profilo salvato** (`chrome.permissions.request`), mai in blocco.
 
 ### Adapter Anthropic (default)
 
-- SDK: `@anthropic-ai/sdk` dal service worker, con `dangerouslyAllowBrowser: true` — accettabile perché la chiave è **dell'utente**, inserita da lui nelle opzioni e salvata in `chrome.storage.local`; non c'è nessuna chiave nostra da proteggere né un backend da cui nasconderla.
+- SDK: `@anthropic-ai/sdk` dal service worker, con `dangerouslyAllowBrowser: true` — accettabile perché la chiave è **dell'utente**, inserita da lui nelle opzioni e salvata in `chrome.storage.local`; non c'è nessuna chiave nostra da proteggere né un backend da cui nasconderla. Con baseUrl impostato (Claude su Azure AI Foundry) si usa `@anthropic-ai/foundry-sdk`, che gestisce l'autenticazione Azure con la stessa superficie `messages.create`.
 - **Structured outputs** (`output_config.format` con JSON schema) per ottenere un oggetto `TLDRSummary` sempre parsabile, senza prefill (non supportato sui modelli correnti).
 
 ### Schema output
@@ -229,7 +230,7 @@ Per gli altri provider il costo dipende dal modello scelto dall'utente e dal lis
 
 ## 5. Cache
 
-`chrome.storage.local`, chiave `summary:{appid}:{lang}:{provider}:{model}:{selectionHash}` (hash della `ReviewSelectionConfig` attiva), valore `{ summary, createdAt, reviewCount }`. TTL default 24h (configurabile). Invalidazione manuale con pulsante "Rigenera" nel pannello. `chrome.storage.local` ha limite ~10MB: eviction LRU oltre le ~200 voci.
+`chrome.storage.local`, chiave `summary:{appid}:{lang}:{profileId}:{model}:{selectionHash}` (hash della `ReviewSelectionConfig` attiva), valore `{ summary, createdAt, reviewCount }`. TTL default 24h (configurabile). Invalidazione manuale con pulsante "Rigenera" nel pannello. `chrome.storage.local` ha limite ~10MB: eviction LRU oltre le ~200 voci.
 
 ## 6. Gestione errori
 
@@ -239,7 +240,7 @@ Per gli altri provider il costo dipende dal modello scelto dall'utente e dal lis
 | Rate limit del provider (429) | Messaggio "riprova tra X secondi" (header `retry-after` se presente) |
 | Endpoint Steam irraggiungibile / vuoto | "Recensioni non disponibili per questo titolo" |
 | Rifiuto del modello / output troncato o non conforme allo schema (dopo 1 retry) | Messaggio generico "riassunto non disponibile", log in console |
-| Azure: host permission negata dall'utente | Pannello con invito a riautorizzare l'endpoint dalle opzioni |
+| Endpoint custom: host permission negata dall'utente | Pannello con invito a riautorizzare l'endpoint dalle opzioni |
 | Gioco con <5 recensioni recenti | Il riassunto viene comunque prodotto ma con avviso "campione ridotto" |
 
 ## 7. Sicurezza e privacy

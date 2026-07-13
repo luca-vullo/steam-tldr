@@ -1,4 +1,4 @@
-import type { ProviderConfig, ProviderId, ReviewSelectionConfig } from "./types";
+import type { ProviderProfile, ReviewSelectionConfig } from "./types";
 import { isSupportedLanguage, resolveDefaultLanguage, type LanguageCode } from "./i18n";
 
 export const DEFAULT_SELECTION_CONFIG: ReviewSelectionConfig = {
@@ -28,43 +28,46 @@ export async function saveSelectionConfig(config: ReviewSelectionConfig): Promis
   await chrome.storage.local.set({ selectionConfig: config });
 }
 
-// F7 — provider attivo + configurazione per provider (le chiavi degli altri
-// provider restano salvate quando si cambia provider attivo)
+// F7 — profili provider: l'utente ne può definire quanti vuole (stesso
+// protocollo, endpoint diversi) e sceglie quello attivo.
 export interface ProviderSettings {
-  active: ProviderId;
-  configs: Partial<Record<ProviderId, ProviderConfig>>;
+  activeProfileId: string;
+  profiles: ProviderProfile[];
 }
 
-export const DEFAULT_MODELS: Record<ProviderId, string> = {
-  anthropic: "claude-opus-4-8",
-  openai: "",
-  gemini: "",
-  azure: "",
-};
+export const DEFAULT_ANTHROPIC_MODEL = "claude-opus-4-8";
 
-const DEFAULT_PROVIDER_SETTINGS: ProviderSettings = {
-  active: "anthropic",
-  configs: {},
+const DEFAULT_PROFILE: ProviderProfile = {
+  id: "default-anthropic",
+  name: "Anthropic API",
+  kind: "anthropic",
+  baseUrl: "",
+  apiKey: "",
+  model: DEFAULT_ANTHROPIC_MODEL,
 };
 
 export async function loadProviderSettings(): Promise<ProviderSettings> {
   const stored = await chrome.storage.local.get("providerSettings");
   const settings = stored["providerSettings"] as Partial<ProviderSettings> | undefined;
-  return { ...DEFAULT_PROVIDER_SETTINGS, ...settings };
+  if (!settings?.profiles?.length) {
+    return { activeProfileId: DEFAULT_PROFILE.id, profiles: [DEFAULT_PROFILE] };
+  }
+  return {
+    activeProfileId: settings.activeProfileId ?? settings.profiles[0]!.id,
+    profiles: settings.profiles,
+  };
 }
 
 export async function saveProviderSettings(settings: ProviderSettings): Promise<void> {
   await chrome.storage.local.set({ providerSettings: settings });
 }
 
-export function activeProviderConfig(settings: ProviderSettings): ProviderConfig {
-  const config = settings.configs[settings.active];
-  return {
-    apiKey: config?.apiKey ?? "",
-    model: config?.model || DEFAULT_MODELS[settings.active],
-    endpoint: config?.endpoint,
-    deployment: config?.deployment,
-  };
+export function activeProfile(settings: ProviderSettings): ProviderProfile {
+  return (
+    settings.profiles.find((p) => p.id === settings.activeProfileId) ??
+    settings.profiles[0] ??
+    DEFAULT_PROFILE
+  );
 }
 
 // F8 — lingua di output/UI

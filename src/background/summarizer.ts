@@ -1,6 +1,6 @@
 import type {
-  ProviderConfig,
-  ProviderId,
+  ProviderKind,
+  ProviderProfile,
   ReviewQuerySummary,
   SteamReview,
   TLDRSummary,
@@ -8,28 +8,27 @@ import type {
 import { LANGUAGE_NAMES, type LanguageCode } from "../shared/i18n";
 import type { LLMProvider, SummarizeRequest } from "./providers/types";
 import { anthropicProvider } from "./providers/anthropic";
+import { openAICompatProvider } from "./providers/openai";
+import { geminiProvider } from "./providers/gemini";
 
-// Registro degli adapter: gli altri provider (F7) arrivano con M5
-const PROVIDERS: Partial<Record<ProviderId, LLMProvider>> = {
+const PROVIDERS: Record<ProviderKind, LLMProvider> = {
   anthropic: anthropicProvider,
+  openai_compat: openAICompatProvider,
+  gemini: geminiProvider,
 };
 
 const MAX_REVIEW_CHARS = 1500;
 
 export async function summarizeReviews(params: {
-  provider: ProviderId;
-  config: ProviderConfig;
+  profile: ProviderProfile;
   gameName: string;
   querySummary: ReviewQuerySummary;
   reviews: SteamReview[];
   language: LanguageCode;
 }): Promise<TLDRSummary> {
-  const provider = PROVIDERS[params.provider];
-  if (!provider) {
-    throw new Error(`Provider non ancora supportato: ${params.provider}`);
-  }
+  const provider = PROVIDERS[params.profile.kind];
   const request = buildRequest(params);
-  const summary = await provider.summarize(request, params.config);
+  const summary = await provider.summarize(request, params.profile);
   return { ...summary, reviews_analyzed: params.reviews.length, language: params.language };
 }
 

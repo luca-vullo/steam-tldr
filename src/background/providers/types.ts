@@ -1,7 +1,7 @@
-import type { ProviderConfig, ProviderId, TLDRSummary } from "../../shared/types";
+import type { ProviderKind, ProviderProfile, TLDRSummary } from "../../shared/types";
 
 // Richiesta provider-agnostica costruita dal summarizer: ogni adapter la
-// traduce nella chiamata nativa del proprio provider e garantisce un JSON
+// traduce nella chiamata nativa del proprio protocollo e garantisce un JSON
 // conforme allo schema TLDRSummary.
 export interface SummarizeRequest {
   system: string;
@@ -9,8 +9,8 @@ export interface SummarizeRequest {
 }
 
 export interface LLMProvider {
-  id: ProviderId;
-  summarize(request: SummarizeRequest, config: ProviderConfig): Promise<TLDRSummary>;
+  kind: ProviderKind;
+  summarize(request: SummarizeRequest, profile: ProviderProfile): Promise<TLDRSummary>;
 }
 
 // JSON schema condiviso tra gli adapter (structured outputs / json_schema / responseSchema)
@@ -52,7 +52,14 @@ export const TLDR_JSON_SCHEMA = {
 } as const;
 
 export function parseTLDRSummary(jsonText: string): TLDRSummary {
-  const parsed = JSON.parse(jsonText) as TLDRSummary;
+  // Alcuni modelli (soprattutto locali, senza output strutturato) avvolgono
+  // il JSON in testo o code fence: estraiamo il primo oggetto plausibile.
+  const start = jsonText.indexOf("{");
+  const end = jsonText.lastIndexOf("}");
+  if (start === -1 || end <= start) {
+    throw new Error("Nessun JSON nell'output del modello");
+  }
+  const parsed = JSON.parse(jsonText.slice(start, end + 1)) as TLDRSummary;
   if (
     typeof parsed.verdict !== "string" ||
     !["positive", "mixed", "negative"].includes(parsed.sentiment) ||
@@ -62,4 +69,13 @@ export function parseTLDRSummary(jsonText: string): TLDRSummary {
     throw new Error("Output del modello non conforme allo schema TLDRSummary");
   }
   return parsed;
+}
+
+// Istruzione di fallback quando il protocollo/endpoint non supporta lo schema
+// nativo (es. alcuni server locali): il vincolo passa nel prompt.
+export function jsonInstruction(): string {
+  return (
+    "\n\nRispondi ESCLUSIVAMENTE con un oggetto JSON conforme a questo schema, senza testo aggiuntivo né code fence:\n" +
+    JSON.stringify(TLDR_JSON_SCHEMA)
+  );
 }

@@ -39,13 +39,12 @@ Questa è la decisione di design più importante del progetto.
 - **F4 — Pannello UI**: pannello collassabile iniettato sotto il box "Recensioni" nativo di Steam, con stile coerente al tema scuro dello store. Stati: caricamento, risultato, errore (chiave mancante, rete, ecc.).
 - **F5 — Opzioni**: pagina opzioni per: scelta del provider AI e relative chiavi API (vedi F7, salvate in `chrome.storage.local`), modello, lingua (vedi F8), impostazioni di selezione recensioni con preset (vedi F2 e F9), durata cache, attivazione automatica vs. click manuale (default: click manuale).
 - **F6 — Cache**: riassunti salvati per `appid` + lingua + provider/modello con TTL configurabile (default 24h), per evitare costi e latenza sulle visite ripetute.
-- **F7 — Multi-provider**: supporto a più provider LLM, ciascuno con la propria chiave API inserita dall'utente nelle opzioni:
-  - **Anthropic** (default) — Claude API
-  - **OpenAI** — Chat Completions/Responses API
+- **F7 — Multi-provider a profili**: l'utente definisce uno o più **profili provider** (nome, tipo, endpoint, chiave API, modello/deployment) e sceglie quello attivo; le chiavi degli altri profili restano salvate. Un profilo è protocollo + endpoint, quindi lo stesso protocollo copre più deployment:
+  - **Protocollo Anthropic** — Claude API (default) oppure Claude deployato su **Azure AI Foundry** (endpoint della risorsa + nome deployment)
+  - **Protocollo OpenAI-compatibile** — OpenAI ufficiale, modelli su **Azure AI Foundry** (endpoint OpenAI v1) oppure **modelli locali** (Ollama, LM Studio e qualsiasi server OpenAI-compatibile; chiave API opzionale)
   - **Google Gemini** — Gemini API
-  - **Azure AI Foundry** — endpoint del deployment dell'utente (richiede anche URL endpoint e nome deployment, oltre alla chiave)
 
-  L'utente seleziona il provider attivo; le chiavi degli altri provider restano salvate e si può cambiare provider senza reinserirle. L'implementazione è un'astrazione a adapter: il resto dell'estensione parla con un'interfaccia unica (vedi [ARCHITECTURE.md](ARCHITECTURE.md#4-riassunto-livello-provider-llm)).
+  Per gli endpoint personalizzati (Azure, locali) il permesso host viene richiesto a runtime solo per l'origin del profilo. L'implementazione è un'astrazione a adapter per protocollo: il resto dell'estensione parla con un'interfaccia unica (vedi [ARCHITECTURE.md](ARCHITECTURE.md#4-riassunto-livello-provider-llm)).
 - **F8 — Selezione lingua**: l'utente sceglie la lingua tra le 5 maggiori lingue occidentali: **italiano, inglese, spagnolo, francese, tedesco**. Default: la lingua del browser se tra le 5, altrimenti inglese. La scelta governa **solo l'output**:
   1. la lingua del riassunto generato;
   2. la lingua della UI dell'estensione (pannello e pagina opzioni, via `chrome.i18n`).

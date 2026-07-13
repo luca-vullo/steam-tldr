@@ -1,6 +1,6 @@
 import type { Message, MessageResponse } from "../shared/types";
 import {
-  activeProviderConfig,
+  activeProfile,
   loadLanguage,
   loadProviderSettings,
   loadSelectionConfig,
@@ -42,12 +42,14 @@ async function handleFetchReviews(appid: string): Promise<MessageResponse> {
 
 async function handleSummarize(appid: string, gameName: string): Promise<MessageResponse> {
   const providerSettings = await loadProviderSettings();
-  const providerConfig = activeProviderConfig(providerSettings);
-  if (!providerConfig.apiKey) {
+  const profile = activeProfile(providerSettings);
+  // La chiave può mancare solo sugli endpoint locali (openai_compat su localhost)
+  const isLocal = /^https?:\/\/(localhost|127\.0\.0\.1)/.test(profile.baseUrl);
+  if (!profile.apiKey && !isLocal) {
     return {
       type: "error",
       code: "missing_api_key",
-      message: `Chiave API mancante per il provider "${providerSettings.active}": inseriscila nella pagina opzioni`,
+      message: `Chiave API mancante per il profilo "${profile.name}": inseriscila nella pagina opzioni`,
     };
   }
 
@@ -56,8 +58,7 @@ async function handleSummarize(appid: string, gameName: string): Promise<Message
   const { selected, querySummary, poolSize } = await collectReviews(appid, selectionConfig);
 
   const summary = await summarizeReviews({
-    provider: providerSettings.active,
-    config: providerConfig,
+    profile,
     gameName,
     querySummary,
     reviews: selected,

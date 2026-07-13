@@ -4,24 +4,58 @@
     <meta charset="utf-8" />
     <title>Steam TL;DR</title>
     <style>
-      body { font-family: system-ui, sans-serif; max-width: 560px; margin: 2rem auto; padding: 0 1rem; }
+      body { font-family: system-ui, sans-serif; max-width: 620px; margin: 2rem auto; padding: 0 1rem; }
+      h2 { margin-top: 2rem; border-bottom: 1px solid #ddd; padding-bottom: 0.25rem; }
       label { display: block; margin-top: 1rem; font-weight: 600; }
       input, select { width: 100%; padding: 0.4rem; margin-top: 0.25rem; box-sizing: border-box; }
-      button { margin-top: 1.5rem; padding: 0.5rem 1.5rem; }
+      button { margin-top: 1rem; padding: 0.4rem 1.2rem; }
       #status { margin-left: 0.75rem; color: green; }
       .hint { font-size: 0.85rem; color: #666; margin: 0.25rem 0 0; }
+      #profileList { list-style: none; padding: 0; }
+      #profileList li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; border-bottom: 1px solid #eee; }
+      #profileList .grow { flex: 1; }
+      #profileList .meta { color: #666; font-size: 0.85rem; }
+      #profileList button { margin: 0; padding: 0.2rem 0.6rem; }
+      .hidden { display: none; }
     </style>
   </head>
   <body>
     <h1 data-i18n="extName"></h1>
 
-    <h2 data-i18n="optionsProviderSection"></h2>
+    <h2 data-i18n="optionsProfilesSection"></h2>
+    <ul id="profileList"></ul>
+
+    <h3 data-i18n="optionsProfileEditor"></h3>
+    <label for="profileName" data-i18n="optionsProfileName"></label>
+    <input type="text" id="profileName" />
+
+    <label for="preset" data-i18n="optionsProfileKind"></label>
+    <select id="preset">
+      <option value="anthropic">Anthropic API</option>
+      <option value="anthropic_foundry">Claude — Azure AI Foundry</option>
+      <option value="openai">OpenAI</option>
+      <option value="openai_azure">OpenAI — Azure AI Foundry</option>
+      <option value="gemini">Google Gemini</option>
+      <option value="local">OpenAI-compatible — local (Ollama, LM Studio…)</option>
+    </select>
+
+    <div id="baseUrlRow">
+      <label for="baseUrl" data-i18n="optionsEndpoint"></label>
+      <input type="url" id="baseUrl" />
+      <p class="hint" id="baseUrlHint"></p>
+    </div>
+
     <label for="apiKey" data-i18n="optionsApiKey"></label>
     <input type="password" id="apiKey" autocomplete="off" />
     <p class="hint" data-i18n="optionsApiKeyHint"></p>
 
     <label for="model" data-i18n="optionsModel"></label>
-    <input type="text" id="model" placeholder="claude-opus-4-8" />
+    <input type="text" id="model" />
+    <p class="hint" data-i18n="optionsModelHint"></p>
+
+    <button id="saveProfile" data-i18n="optionsSaveProfile"></button>
+    <button id="resetForm" data-i18n="optionsNewProfile"></button>
+    <span id="status"></span>
 
     <h2 data-i18n="optionsGeneralSection"></h2>
     <label for="language" data-i18n="optionsLanguage"></label>
@@ -43,7 +77,8 @@
     <label for="numReviews" data-i18n="optionsNumReviews"></label>
     <input type="number" id="numReviews" min="5" max="200" />
 
-    <button id="save" data-i18n="optionsSave"></button><span id="status"></span>
+    <button id="saveGeneral" data-i18n="optionsSave"></button>
+    <span id="statusGeneral"></span>
 
     <script type="module" src="./options.ts"></script>
   </body>

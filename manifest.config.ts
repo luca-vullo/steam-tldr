@@ -14,10 +14,13 @@ export default defineManifest({
     "https://api.openai.com/*",
     "https://generativelanguage.googleapis.com/*",
   ],
+  // Endpoint scelti dall'utente (Azure AI Foundry, Azure OpenAI, server
+  // locali...): il permesso viene richiesto a runtime SOLO per l'origin del
+  // profilo salvato, mai in blocco.
   optional_host_permissions: [
-    "https://*.openai.azure.com/*",
-    "https://*.services.ai.azure.com/*",
-    "https://*.cognitiveservices.azure.com/*",
+    "https://*/*",
+    "http://localhost/*",
+    "http://127.0.0.1/*",
   ],
   content_scripts: [
     {

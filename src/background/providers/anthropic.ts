@@ -22,10 +22,11 @@ export const anthropicProvider: LLMProvider = {
           dangerouslyAllowBrowser: true,
         });
 
+    // Niente parametro thinking: deve funzionare con qualsiasi modello Claude
+    // (Haiku 4.5 non supporta l'adattivo) e per un riassunto non serve.
     const response = await client.messages.create({
       model: profile.model,
       max_tokens: 4000,
-      thinking: { type: "adaptive" },
       system: request.system,
       messages: [{ role: "user", content: request.user }],
       output_config: {

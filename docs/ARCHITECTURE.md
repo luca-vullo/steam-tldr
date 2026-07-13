@@ -213,7 +213,7 @@ Per Anthropic (default):
 | **Claude Opus 4.8** (default) | `claude-opus-4-8` | $5.00 | $25.00 | Qualità massima del riassunto |
 | Claude Haiku 4.5 (opzione economica) | `claude-haiku-4-5` | $1.00 | $5.00 | Selezionabile nelle opzioni |
 
-Parametri: `max_tokens: 2000`, niente `temperature` (rimossa sui modelli correnti), thinking adattivo di default.
+Parametri: `max_tokens: 4000`, niente `temperature` (rimossa sui modelli correnti), nessun parametro `thinking` (così l'adapter funziona con tutti i modelli Claude: Haiku 4.5 non supporta l'adattivo, e per un riassunto il thinking non è necessario).
 
 Per OpenAI, Gemini e Azure AI Foundry il modello è un campo libero nelle opzioni (con suggerimenti aggiornati alla release): gli ID modello di questi provider cambiano di frequente e non vanno cablati nel codice.
 

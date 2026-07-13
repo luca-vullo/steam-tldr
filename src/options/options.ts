@@ -233,6 +233,7 @@ async function saveGeneral(): Promise<void> {
     Math.min(200, Number($<HTMLInputElement>("numReviews").value) || 50),
   );
   await saveSelectionConfig(selection);
+  await chrome.storage.local.set({ autoGenerate: $<HTMLInputElement>("autoGenerate").checked });
   flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "green");
 }
 
@@ -251,6 +252,8 @@ async function init(): Promise<void> {
   const selection = await loadSelectionConfig();
   $<HTMLSelectElement>("mode").value = selection.mode;
   $<HTMLInputElement>("numReviews").value = String(selection.numReviews);
+  const stored = await chrome.storage.local.get("autoGenerate");
+  $<HTMLInputElement>("autoGenerate").checked = stored["autoGenerate"] === true;
 }
 
 presetSelect.addEventListener("change", () => {

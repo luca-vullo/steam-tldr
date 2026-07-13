@@ -1,29 +1,131 @@
 {
-  "extName": { "message": "Steam TL;DR" },
-  "extDescription": { "message": "Resumen con IA de las reseñas recientes de un juego, directamente en su página de la tienda de Steam." },
-  "optionsProfilesSection": { "message": "Perfiles de proveedor de IA" },
-  "optionsProfileEditor": { "message": "Nuevo perfil / editar" },
-  "optionsProfileName": { "message": "Nombre del perfil" },
-  "optionsProfileKind": { "message": "Tipo" },
-  "optionsEndpoint": { "message": "Endpoint" },
-  "optionsEndpointHintFoundry": { "message": "La URL de tu recurso, p. ej. https://NOMBRE-RECURSO.services.ai.azure.com/anthropic/ — el modelo de abajo es el nombre del deployment." },
-  "optionsEndpointHintAzureOpenAI": { "message": "El endpoint OpenAI v1 de tu recurso de Azure AI Foundry, p. ej. https://NOMBRE-RECURSO.openai.azure.com/openai/v1 — el modelo de abajo es el nombre del deployment." },
-  "optionsEndpointHintLocal": { "message": "Endpoint compatible con OpenAI de tu servidor local (Ollama: http://localhost:11434/v1). La clave API puede quedar vacía." },
-  "optionsEndpointRequired": { "message": "El endpoint es obligatorio para este tipo de perfil" },
-  "optionsPermissionDenied": { "message": "Permiso denegado para el endpoint: el perfil no puede funcionar sin él" },
-  "optionsApiKey": { "message": "Clave API" },
-  "optionsApiKeyHint": { "message": "Tu clave personal, guardada solo en este navegador y enviada solo al endpoint del perfil." },
-  "optionsModel": { "message": "Modelo / deployment" },
-  "optionsModelHint": { "message": "ID del modelo (p. ej. claude-opus-4-8) o nombre del deployment en Azure AI Foundry." },
-  "optionsSaveProfile": { "message": "Guardar perfil" },
-  "optionsNewProfile": { "message": "Nuevo" },
-  "optionsActive": { "message": "Perfil activo" },
-  "optionsEdit": { "message": "Editar" },
-  "optionsDelete": { "message": "Eliminar" },
-  "optionsGeneralSection": { "message": "Generales" },
-  "optionsLanguage": { "message": "Idioma (interfaz y resumen)" },
-  "optionsMode": { "message": "Modo de selección de reseñas" },
-  "optionsNumReviews": { "message": "Reseñas enviadas al modelo" },
-  "optionsSave": { "message": "Guardar" },
-  "optionsSaved": { "message": "Guardado ✓" }
+  "extName": {
+    "message": "Steam TL;DR"
+  },
+  "extDescription": {
+    "message": "Resumen con IA de las reseñas recientes de un juego, directamente en su página de la tienda de Steam."
+  },
+  "optionsProfilesSection": {
+    "message": "Perfiles de proveedor de IA"
+  },
+  "optionsProfileEditor": {
+    "message": "Nuevo perfil / editar"
+  },
+  "optionsProfileName": {
+    "message": "Nombre del perfil"
+  },
+  "optionsProfileKind": {
+    "message": "Tipo"
+  },
+  "optionsEndpoint": {
+    "message": "Endpoint"
+  },
+  "optionsEndpointHintFoundry": {
+    "message": "La URL de tu recurso, p. ej. https://NOMBRE-RECURSO.services.ai.azure.com/anthropic/ — el modelo de abajo es el nombre del deployment."
+  },
+  "optionsEndpointHintAzureOpenAI": {
+    "message": "El endpoint OpenAI v1 de tu recurso de Azure AI Foundry, p. ej. https://NOMBRE-RECURSO.openai.azure.com/openai/v1 — el modelo de abajo es el nombre del deployment."
+  },
+  "optionsEndpointHintLocal": {
+    "message": "Endpoint compatible con OpenAI de tu servidor local (Ollama: http://localhost:11434/v1). La clave API puede quedar vacía."
+  },
+  "optionsEndpointRequired": {
+    "message": "El endpoint es obligatorio para este tipo de perfil"
+  },
+  "optionsPermissionDenied": {
+    "message": "Permiso denegado para el endpoint: el perfil no puede funcionar sin él"
+  },
+  "optionsApiKey": {
+    "message": "Clave API"
+  },
+  "optionsApiKeyHint": {
+    "message": "Tu clave personal, guardada solo en este navegador y enviada solo al endpoint del perfil."
+  },
+  "optionsModel": {
+    "message": "Modelo / deployment"
+  },
+  "optionsModelHint": {
+    "message": "ID del modelo (p. ej. claude-opus-4-8) o nombre del deployment en Azure AI Foundry."
+  },
+  "optionsSaveProfile": {
+    "message": "Guardar perfil"
+  },
+  "optionsNewProfile": {
+    "message": "Nuevo"
+  },
+  "optionsActive": {
+    "message": "Perfil activo"
+  },
+  "optionsEdit": {
+    "message": "Editar"
+  },
+  "optionsDelete": {
+    "message": "Eliminar"
+  },
+  "optionsGeneralSection": {
+    "message": "Generales"
+  },
+  "optionsLanguage": {
+    "message": "Idioma (interfaz y resumen)"
+  },
+  "optionsMode": {
+    "message": "Modo de selección de reseñas"
+  },
+  "optionsNumReviews": {
+    "message": "Reseñas enviadas al modelo"
+  },
+  "optionsSave": {
+    "message": "Guardar"
+  },
+  "optionsSaved": {
+    "message": "Guardado ✓"
+  },
+  "optionsAutoGenerate": {
+    "message": "Generar automáticamente al abrir la página (cada página visitada cuesta una llamada API)"
+  },
+  "panelTitle": {
+    "message": "de las reseñas recientes"
+  },
+  "panelGenerate": {
+    "message": "Generar TL;DR"
+  },
+  "panelRegenerate": {
+    "message": "Regenerar"
+  },
+  "panelIdleHint": {
+    "message": "Resumen con IA de las reseñas recientes, generado con tu propia clave API."
+  },
+  "panelLoading": {
+    "message": "Analizando las reseñas recientes…"
+  },
+  "panelPros": {
+    "message": "Puntos fuertes"
+  },
+  "panelCons": {
+    "message": "Puntos débiles"
+  },
+  "panelRecentChanges": {
+    "message": "Actualizaciones recientes"
+  },
+  "panelDisclosure": {
+    "message": "Resumen generado por IA a partir de $1 reseñas recientes de usuarios. No es contenido oficial de Steam."
+  },
+  "panelMissingKey": {
+    "message": "Configura un perfil de proveedor con clave API en las opciones para generar el resumen."
+  },
+  "panelOpenOptions": {
+    "message": "Abrir opciones"
+  },
+  "panelGenericError": {
+    "message": "Resumen no disponible. Inténtalo de nuevo en un momento."
+  },
+  "sentimentPositive": {
+    "message": "En general positivas"
+  },
+  "sentimentMixed": {
+    "message": "Mixtas"
+  },
+  "sentimentNegative": {
+    "message": "En general negativas"
+  }
 }

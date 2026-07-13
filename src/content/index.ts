@@ -1,4 +1,5 @@
 import type { Message, MessageResponse } from "../shared/types";
+import { createPanel } from "./panel";
 
 // F1 — estrae l'appid da store.steampowered.com/app/{appid}/...
 function extractAppId(url: string): string | null {
@@ -13,6 +14,23 @@ function extractGameName(): string {
   );
 }
 
+// Punto di iniezione: sotto il box "glance" della colonna destra (che
+// contiene le valutazioni recensioni). Fallback: sopra la descrizione del
+// gioco, poi in fondo al contenuto pagina (F4 / requisito di resilienza).
+function injectPanel(panelEl: HTMLElement): void {
+  const glance = document.querySelector(".rightcol .glance_ctn");
+  if (glance) {
+    glance.after(panelEl);
+    return;
+  }
+  const description = document.querySelector("#game_area_description");
+  if (description) {
+    description.before(panelEl);
+    return;
+  }
+  (document.querySelector(".page_content_ctn") ?? document.body).append(panelEl);
+}
+
 function send(message: Message, onResponse: (r: MessageResponse) => void): void {
   chrome.runtime.sendMessage(message, onResponse);
 }
@@ -20,44 +38,27 @@ function send(message: Message, onResponse: (r: MessageResponse) => void): void 
 const appid = extractAppId(location.href);
 if (appid) {
   const gameName = extractGameName();
-  console.log(`[steam-tldr] pagina gioco rilevata: "${gameName}" (appid=${appid})`);
 
-  send({ type: "summarize", appid, gameName }, (response) => {
-    if (response.type === "summary") {
-      const { summary, reviewsUsed, poolSize } = response;
-      console.log(
-        `[steam-tldr] TL;DR generato da ${reviewsUsed} recensioni (pool ${poolSize}):`,
-      );
-      console.log(JSON.stringify(summary, null, 2));
-      return;
-    }
+  const panel = createPanel(generate);
+  injectPanel(panel.element);
+  panel.setIdle();
 
-    if (response.type === "error" && response.code === "missing_api_key") {
-      console.warn(`[steam-tldr] ${response.message}`);
-      // Senza chiave mostriamo comunque la selezione recensioni (debug M1)
-      send({ type: "fetchReviews", appid }, (fallback) => {
-        if (fallback.type !== "reviews") return;
-        const positives = fallback.reviews.filter((r) => r.votedUp).length;
-        console.log(
-          `[steam-tldr] ${fallback.reviews.length} recensioni selezionate su un pool di ${fallback.poolSize} ` +
-            `(${positives} positive, ${fallback.reviews.length - positives} negative) — ` +
-            `punteggio complessivo Steam: ${fallback.querySummary.reviewScoreDesc}`,
-        );
-        console.table(
-          fallback.reviews.map((r) => ({
-            lingua: r.language,
-            positiva: r.votedUp,
-            voti: r.votesUp,
-            ore: Math.round(r.playtimeForeverMin / 60),
-            testo: r.text.slice(0, 80).replaceAll("\n", " "),
-          })),
-        );
-      });
-      return;
-    }
-
-    if (response.type === "error") {
-      console.error("[steam-tldr] errore:", response.message);
-    }
+  // F5 — attivazione automatica opzionale (default: click manuale)
+  chrome.storage.local.get("autoGenerate").then((stored) => {
+    if (stored["autoGenerate"] === true) generate();
   });
+
+  function generate(): void {
+    panel.setLoading();
+    send({ type: "summarize", appid: appid!, gameName }, (response) => {
+      if (response.type === "summary") {
+        panel.setResult(response.summary, response.reviewsUsed);
+        return;
+      }
+      if (response.type === "error") {
+        panel.setError(response.message, response.code === "missing_api_key");
+        return;
+      }
+    });
+  }
 }

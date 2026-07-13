@@ -1,29 +1,131 @@
 {
-  "extName": { "message": "Steam TL;DR" },
-  "extDescription": { "message": "AI summary of a game's recent Steam reviews, shown directly on its store page." },
-  "optionsProfilesSection": { "message": "AI provider profiles" },
-  "optionsProfileEditor": { "message": "New profile / edit" },
-  "optionsProfileName": { "message": "Profile name" },
-  "optionsProfileKind": { "message": "Type" },
-  "optionsEndpoint": { "message": "Endpoint" },
-  "optionsEndpointHintFoundry": { "message": "Your resource URL, e.g. https://RESOURCE-NAME.services.ai.azure.com/anthropic/ — the model below is the deployment name." },
-  "optionsEndpointHintAzureOpenAI": { "message": "Your Azure AI Foundry OpenAI v1 endpoint, e.g. https://RESOURCE-NAME.openai.azure.com/openai/v1 — the model below is the deployment name." },
-  "optionsEndpointHintLocal": { "message": "OpenAI-compatible endpoint of your local server (Ollama: http://localhost:11434/v1). API key can stay empty." },
-  "optionsEndpointRequired": { "message": "Endpoint is required for this profile type" },
-  "optionsPermissionDenied": { "message": "Permission denied for the endpoint: the profile cannot work without it" },
-  "optionsApiKey": { "message": "API key" },
-  "optionsApiKeyHint": { "message": "Your personal key, stored only in this browser and sent only to the profile's endpoint." },
-  "optionsModel": { "message": "Model / deployment" },
-  "optionsModelHint": { "message": "Model ID (e.g. claude-opus-4-8) or deployment name on Azure AI Foundry." },
-  "optionsSaveProfile": { "message": "Save profile" },
-  "optionsNewProfile": { "message": "New" },
-  "optionsActive": { "message": "Active profile" },
-  "optionsEdit": { "message": "Edit" },
-  "optionsDelete": { "message": "Delete" },
-  "optionsGeneralSection": { "message": "General" },
-  "optionsLanguage": { "message": "Language (UI and summary)" },
-  "optionsMode": { "message": "Review selection mode" },
-  "optionsNumReviews": { "message": "Reviews sent to the model" },
-  "optionsSave": { "message": "Save" },
-  "optionsSaved": { "message": "Saved ✓" }
+  "extName": {
+    "message": "Steam TL;DR"
+  },
+  "extDescription": {
+    "message": "AI summary of a game's recent Steam reviews, shown directly on its store page."
+  },
+  "optionsProfilesSection": {
+    "message": "AI provider profiles"
+  },
+  "optionsProfileEditor": {
+    "message": "New profile / edit"
+  },
+  "optionsProfileName": {
+    "message": "Profile name"
+  },
+  "optionsProfileKind": {
+    "message": "Type"
+  },
+  "optionsEndpoint": {
+    "message": "Endpoint"
+  },
+  "optionsEndpointHintFoundry": {
+    "message": "Your resource URL, e.g. https://RESOURCE-NAME.services.ai.azure.com/anthropic/ — the model below is the deployment name."
+  },
+  "optionsEndpointHintAzureOpenAI": {
+    "message": "Your Azure AI Foundry OpenAI v1 endpoint, e.g. https://RESOURCE-NAME.openai.azure.com/openai/v1 — the model below is the deployment name."
+  },
+  "optionsEndpointHintLocal": {
+    "message": "OpenAI-compatible endpoint of your local server (Ollama: http://localhost:11434/v1). API key can stay empty."
+  },
+  "optionsEndpointRequired": {
+    "message": "Endpoint is required for this profile type"
+  },
+  "optionsPermissionDenied": {
+    "message": "Permission denied for the endpoint: the profile cannot work without it"
+  },
+  "optionsApiKey": {
+    "message": "API key"
+  },
+  "optionsApiKeyHint": {
+    "message": "Your personal key, stored only in this browser and sent only to the profile's endpoint."
+  },
+  "optionsModel": {
+    "message": "Model / deployment"
+  },
+  "optionsModelHint": {
+    "message": "Model ID (e.g. claude-opus-4-8) or deployment name on Azure AI Foundry."
+  },
+  "optionsSaveProfile": {
+    "message": "Save profile"
+  },
+  "optionsNewProfile": {
+    "message": "New"
+  },
+  "optionsActive": {
+    "message": "Active profile"
+  },
+  "optionsEdit": {
+    "message": "Edit"
+  },
+  "optionsDelete": {
+    "message": "Delete"
+  },
+  "optionsGeneralSection": {
+    "message": "General"
+  },
+  "optionsLanguage": {
+    "message": "Language (UI and summary)"
+  },
+  "optionsMode": {
+    "message": "Review selection mode"
+  },
+  "optionsNumReviews": {
+    "message": "Reviews sent to the model"
+  },
+  "optionsSave": {
+    "message": "Save"
+  },
+  "optionsSaved": {
+    "message": "Saved ✓"
+  },
+  "optionsAutoGenerate": {
+    "message": "Generate automatically when the page opens (each visited page costs one API call)"
+  },
+  "panelTitle": {
+    "message": "of recent reviews"
+  },
+  "panelGenerate": {
+    "message": "Generate TL;DR"
+  },
+  "panelRegenerate": {
+    "message": "Regenerate"
+  },
+  "panelIdleHint": {
+    "message": "AI summary of recent reviews, generated with your own API key."
+  },
+  "panelLoading": {
+    "message": "Analyzing recent reviews…"
+  },
+  "panelPros": {
+    "message": "Strengths"
+  },
+  "panelCons": {
+    "message": "Weak points"
+  },
+  "panelRecentChanges": {
+    "message": "Recent updates"
+  },
+  "panelDisclosure": {
+    "message": "AI-generated summary based on $1 recent user reviews. Not official Steam content."
+  },
+  "panelMissingKey": {
+    "message": "Set up a provider profile with an API key in the options to generate the summary."
+  },
+  "panelOpenOptions": {
+    "message": "Open options"
+  },
+  "panelGenericError": {
+    "message": "Summary unavailable. Try again in a moment."
+  },
+  "sentimentPositive": {
+    "message": "Overall positive"
+  },
+  "sentimentMixed": {
+    "message": "Mixed"
+  },
+  "sentimentNegative": {
+    "message": "Overall negative"
+  }
 }

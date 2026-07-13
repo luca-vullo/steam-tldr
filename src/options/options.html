@@ -17,6 +17,8 @@
       #profileList .meta { color: #666; font-size: 0.85rem; }
       #profileList button { margin: 0; padding: 0.2rem 0.6rem; }
       .hidden { display: none; }
+      .check { display: flex; align-items: center; gap: 0.5rem; }
+      .check input { width: auto; margin: 0; }
     </style>
   </head>
   <body>
@@ -76,6 +78,8 @@
 
     <label for="numReviews" data-i18n="optionsNumReviews"></label>
     <input type="number" id="numReviews" min="5" max="200" />
+
+    <label class="check"><input type="checkbox" id="autoGenerate" /><span data-i18n="optionsAutoGenerate"></span></label>
 
     <button id="saveGeneral" data-i18n="optionsSave"></button>
     <span id="statusGeneral"></span>

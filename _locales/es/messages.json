@@ -127,5 +127,8 @@
   },
   "sentimentNegative": {
     "message": "En general negativas"
+  },
+  "panelClose": {
+    "message": "Cerrar"
   }
 }

@@ -36,7 +36,7 @@ Questa è la decisione di design più importante del progetto.
 
   Dettagli del motore di selezione in [ARCHITECTURE.md](ARCHITECTURE.md#3-sorgente-dati-endpoint-recensioni-di-steam).
 - **F3 — Riassunto AI**: una chiamata al provider LLM configurato produce un TL;DR strutturato: verdetto in una riga, sentiment (positivo/misto/negativo), 3–5 pro, 3–5 contro, eventuale nota su patch recenti.
-- **F4 — Pannello UI**: pannello collassabile iniettato sotto il box "Recensioni" nativo di Steam, con stile coerente al tema scuro dello store. Stati: caricamento, risultato, errore (chiave mancante, rete, ecc.).
+- **F4 — Widget UI**: linguetta fissa "TL;DR" sul bordo destro della pagina che apre un drawer laterale, con stile coerente al tema scuro dello store. **Indipendente dal layout di Steam** (nessun selettore del markup della pagina: l'iniezione nel DOM interno si è dimostrata fragile, il widget in overlay no). Stati: idle con bottone "Genera", caricamento, risultato, errore (chiave mancante, rete, ecc.).
 - **F5 — Opzioni**: pagina opzioni per: scelta del provider AI e relative chiavi API (vedi F7, salvate in `chrome.storage.local`), modello, lingua (vedi F8), impostazioni di selezione recensioni con preset (vedi F2 e F9), durata cache, attivazione automatica vs. click manuale (default: click manuale).
 - **F6 — Cache**: riassunti salvati per `appid` + lingua + provider/modello con TTL configurabile (default 24h), per evitare costi e latenza sulle visite ripetute.
 - **F7 — Multi-provider a profili**: l'utente definisce uno o più **profili provider** (nome, tipo, endpoint, chiave API, modello/deployment) e sceglie quello attivo; le chiavi degli altri profili restano salvate. Un profilo è protocollo + endpoint, quindi lo stesso protocollo copre più deployment:
@@ -71,7 +71,7 @@ Questa è la decisione di design più importante del progetto.
 
 - **Privacy**: nessun dato lascia il browser eccetto le recensioni inviate al provider AI configurato per il riassunto. Nessun backend proprio nell'MVP.
 - **Costi prevedibili**: cache aggressiva; stima costi in [ARCHITECTURE.md](ARCHITECTURE.md#stima-costi).
-- **Resilienza**: se Steam cambia il markup della pagina, il fetch delle recensioni continua a funzionare (dipendiamo dall'endpoint JSON, non dal DOM); solo il punto di iniezione del pannello è sensibile al markup, con fallback a fine pagina.
+- **Resilienza**: se Steam cambia il markup della pagina, nulla si rompe — il fetch delle recensioni dipende dall'endpoint JSON e il widget è un overlay fisso che non usa selettori del DOM di Steam.
 - **Localizzazione**: UI e riassunto in italiano, inglese, spagnolo, francese e tedesco nell'MVP (vedi F8).
 
 ## 5. Roadmap
@@ -91,5 +91,5 @@ Questa è la decisione di design più importante del progetto.
 |---|---|---|
 | Steam modifica/limita l'endpoint `appreviews` | Alto | È un endpoint pubblico stabile da anni; in caso di rate limit, backoff e messaggio d'errore chiaro |
 | Costi API inattesi per l'utente | Medio | Cache 24h, attivazione manuale opzionale, stima costi visibile nelle opzioni |
-| Iniezione UI fragile al cambio di layout Steam | Basso | Selettori con fallback; il valore dell'estensione non dipende dal punto esatto di iniezione |
+| Iniezione UI fragile al cambio di layout Steam | Nullo | Il widget è un overlay fisso: non usa selettori del DOM di Steam |
 | Recensioni con contenuti offensivi in input | Basso | Il prompt istruisce il modello a riassumere i temi, non a citare testualmente insulti |

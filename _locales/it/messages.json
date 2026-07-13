@@ -127,5 +127,8 @@
   },
   "sentimentNegative": {
     "message": "Complessivamente negative"
+  },
+  "panelClose": {
+    "message": "Chiudi"
   }
 }

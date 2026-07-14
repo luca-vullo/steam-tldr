@@ -27,6 +27,9 @@ export async function summarizeReviews(params: {
   language: LanguageCode;
 }): Promise<TLDRSummary> {
   const provider = PROVIDERS[params.profile.kind];
+  if (!provider) {
+    throw new Error(`Unknown provider kind: ${String(params.profile.kind)}`);
+  }
   const request = buildRequest(params);
   const summary = await provider.summarize(request, params.profile);
   return { ...summary, reviews_analyzed: params.reviews.length, language: params.language };

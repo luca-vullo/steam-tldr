@@ -25,21 +25,29 @@ Bring your own AI: the extension works with **your own API key** on the provider
 - **Local cache** with configurable TTL; "Regenerate" bypasses it
 - **Privacy by design**: your API keys live only in `chrome.storage.local` and are sent only to the endpoint of their own profile; review texts are the only data sent to the AI provider; no telemetry, no server of ours
 
-## Install (from source)
+## Install
+
+### From a release (no build tools needed)
+
+1. Download the latest `steam-tldr-vX.Y.Z.zip` from the [Releases page](https://github.com/luca-vullo/steam-tldr/releases)
+2. Unzip it anywhere (keep the folder — Chrome loads it from there)
+3. Open `chrome://extensions`, enable **Developer mode** (top right)
+4. Click **Load unpacked** and select the unzipped folder
+5. Open the extension's **Options**, create a provider profile with your API key, and save
+6. Visit any Steam game page and click the **TL;DR** tab on the right edge
+
+The zip is built automatically by [CI](.github/workflows/release.yml) from the tagged source — you can reproduce it yourself with the steps below and compare.
+
+### From source
 
 ```sh
 git clone https://github.com/luca-vullo/steam-tldr.git
 cd steam-tldr
-npm install
+npm ci
 npm run build
 ```
 
-Then in Chrome:
-
-1. Open `chrome://extensions` and enable **Developer mode**
-2. Click **Load unpacked** and select the `dist/` folder
-3. Open the extension's **Options** page, create a provider profile with your API key, and save
-4. Visit any Steam game page and click the **TL;DR** tab on the right edge
+Then load the `dist/` folder as an unpacked extension (steps 3–6 above).
 
 ## Configuration notes
 
@@ -54,10 +62,15 @@ Then in Chrome:
 
 For custom endpoints (Azure, local) the extension asks for host permission **only for that specific origin** when you save the profile.
 
+## Security & privacy
+
+The extension is designed to be **audited in one sitting** (~1,500 lines of TypeScript): no telemetry, no server of ours, keys stored locally and sent only to their own profile's endpoint, model output always rendered as text. [docs/SECURITY.md](docs/SECURITY.md) contains the full threat model, the data-flow map, the permissions rationale, and a set of invariants you can verify mechanically with `grep`. Found a vulnerability? See [SECURITY.md](SECURITY.md) for private reporting.
+
 ## Documentation
 
 - [docs/SPECS.md](docs/SPECS.md) — functional specification, Steam compliance, roadmap
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — technical architecture, data flows, provider layer
+- [docs/SECURITY.md](docs/SECURITY.md) — threat model and audit guide
 
 ## Contributing
 

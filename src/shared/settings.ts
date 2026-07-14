@@ -14,14 +14,36 @@ export const DEFAULT_SELECTION_CONFIG: ReviewSelectionConfig = {
   minChars: 30,
 };
 
+// Stored values are untrusted (they may come from an imported preset file):
+// sanitizeSelectionConfig is the single choke point that clamps every field.
+export function sanitizeSelectionConfig(input: unknown): ReviewSelectionConfig {
+  const raw = (input ?? {}) as Partial<ReviewSelectionConfig>;
+  const d = DEFAULT_SELECTION_CONFIG;
+  const num = (value: unknown, fallback: number, min: number, max: number): number => {
+    const n = Number(value);
+    return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : fallback;
+  };
+  const modes: ReviewSelectionConfig["mode"][] = ["hybrid", "recent_scored", "steam_native"];
+  const weights = (raw.weights ?? {}) as Partial<ReviewSelectionConfig["weights"]>;
+  return {
+    mode: modes.includes(raw.mode as ReviewSelectionConfig["mode"])
+      ? (raw.mode as ReviewSelectionConfig["mode"])
+      : d.mode,
+    numReviews: num(raw.numReviews, d.numReviews, 5, 200),
+    dayRange: num(raw.dayRange, d.dayRange, 1, 365),
+    minChars: num(raw.minChars, d.minChars, 0, 500),
+    weights: {
+      helpfulness: num(weights.helpfulness, d.weights.helpfulness, 0, 1),
+      playtime: num(weights.playtime, d.weights.playtime, 0, 1),
+      substance: num(weights.substance, d.weights.substance, 0, 1),
+      freshness: num(weights.freshness, d.weights.freshness, 0, 1),
+    },
+  };
+}
+
 export async function loadSelectionConfig(): Promise<ReviewSelectionConfig> {
   const stored = await chrome.storage.local.get("selectionConfig");
-  const config = stored["selectionConfig"] as Partial<ReviewSelectionConfig> | undefined;
-  return {
-    ...DEFAULT_SELECTION_CONFIG,
-    ...config,
-    weights: { ...DEFAULT_SELECTION_CONFIG.weights, ...config?.weights },
-  };
+  return sanitizeSelectionConfig(stored["selectionConfig"]);
 }
 
 export async function saveSelectionConfig(config: ReviewSelectionConfig): Promise<void> {

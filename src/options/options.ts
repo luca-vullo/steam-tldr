@@ -3,6 +3,7 @@
 import {
   DEFAULT_ANTHROPIC_MODEL,
   DEFAULT_SELECTION_CONFIG,
+  sanitizeSelectionConfig,
   loadCacheTtlHours,
   loadLanguage,
   loadPresets,
@@ -299,8 +300,9 @@ async function presetImport(file: File): Promise<void> {
     const incoming = parsed.selectionPresets;
     if (!incoming || typeof incoming !== "object") throw new Error("invalid format");
     for (const [name, config] of Object.entries(incoming)) {
+      // Imported files are untrusted: sanitize every entry and cap the name
       if (name !== DEFAULT_PRESET_NAME) {
-        presets[name] = { ...DEFAULT_SELECTION_CONFIG, ...config, weights: { ...DEFAULT_SELECTION_CONFIG.weights, ...config.weights } };
+        presets[name.slice(0, 60)] = sanitizeSelectionConfig(config);
       }
     }
     await savePresets(presets);

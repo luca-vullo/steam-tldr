@@ -214,5 +214,11 @@
   },
   "tipWeightFreshness": {
     "message": "Cuánto cuenta la fecha: favorece las reseñas más nuevas dentro del rango."
+  },
+  "optionsClearCache": {
+    "message": "Vaciar caché de resúmenes ($1)"
+  },
+  "optionsClearCacheDone": {
+    "message": "Caché vaciada: $1 resúmenes eliminados"
   }
 }

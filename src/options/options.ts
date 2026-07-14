@@ -345,6 +345,27 @@ function flash(el: HTMLElement, text: string, color: string): void {
   setTimeout(() => (el.textContent = ""), 2500);
 }
 
+// ---------- summary cache (F6) ----------
+
+const CACHE_PREFIX = "summary:"; // must match src/background/cache.ts
+
+async function cachedKeys(): Promise<string[]> {
+  const all = await chrome.storage.local.get(null);
+  return Object.keys(all).filter((k) => k.startsWith(CACHE_PREFIX));
+}
+
+async function refreshClearCacheLabel(): Promise<void> {
+  const count = (await cachedKeys()).length;
+  $<HTMLButtonElement>("clearCache").textContent = t("optionsClearCache", [String(count)]);
+}
+
+async function clearCache(): Promise<void> {
+  const keys = await cachedKeys();
+  await chrome.storage.local.remove(keys);
+  await refreshClearCacheLabel();
+  flash(statusGeneralEl, t("optionsClearCacheDone", [String(keys.length)]), "#a4d007");
+}
+
 async function init(): Promise<void> {
   // F8 — i18n first: everything rendered below uses t()
   currentLanguage = await loadLanguage();
@@ -363,6 +384,7 @@ async function init(): Promise<void> {
   $<HTMLInputElement>("cacheTtl").value = String(await loadCacheTtlHours());
   const stored = await chrome.storage.local.get("autoGenerate");
   $<HTMLInputElement>("autoGenerate").checked = stored["autoGenerate"] === true;
+  await refreshClearCacheLabel();
 }
 
 presetSelect.addEventListener("change", () => {
@@ -372,6 +394,7 @@ presetSelect.addEventListener("change", () => {
 $<HTMLButtonElement>("saveProfile").addEventListener("click", () => void saveProfile());
 $<HTMLButtonElement>("resetForm").addEventListener("click", resetForm);
 $<HTMLButtonElement>("saveGeneral").addEventListener("click", () => void saveGeneral());
+$<HTMLButtonElement>("clearCache").addEventListener("click", () => void clearCache());
 $<HTMLButtonElement>("presetLoad").addEventListener("click", () => void presetLoad());
 $<HTMLButtonElement>("presetSave").addEventListener("click", () => void presetSave());
 $<HTMLButtonElement>("presetDelete").addEventListener("click", () => void presetDelete());

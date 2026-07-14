@@ -214,5 +214,11 @@
   },
   "tipWeightFreshness": {
     "message": "How much recency matters: favors the newest reviews within the date range."
+  },
+  "optionsClearCache": {
+    "message": "Clear summary cache ($1)"
+  },
+  "optionsClearCacheDone": {
+    "message": "Cache cleared: $1 summaries removed"
   }
 }

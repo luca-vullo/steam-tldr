@@ -214,5 +214,11 @@
   },
   "tipWeightFreshness": {
     "message": "Gewicht der Aktualität: bevorzugt die neuesten Rezensionen im Zeitraum."
+  },
+  "optionsClearCache": {
+    "message": "Zusammenfassungs-Cache leeren ($1)"
+  },
+  "optionsClearCacheDone": {
+    "message": "Cache geleert: $1 Zusammenfassungen entfernt"
   }
 }

@@ -214,5 +214,11 @@
   },
   "tipWeightFreshness": {
     "message": "Poids de la date : favorise les avis les plus récents dans la plage de dates."
+  },
+  "optionsClearCache": {
+    "message": "Vider le cache des résumés ($1)"
+  },
+  "optionsClearCacheDone": {
+    "message": "Cache vidé : $1 résumés supprimés"
   }
 }

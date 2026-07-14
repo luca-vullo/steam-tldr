@@ -214,5 +214,11 @@
   },
   "tipWeightFreshness": {
     "message": "Quanto conta la data: privilegia le recensioni più recenti dentro il range di date."
+  },
+  "optionsClearCache": {
+    "message": "Svuota cache riassunti ($1)"
+  },
+  "optionsClearCacheDone": {
+    "message": "Cache svuotata: $1 riassunti rimossi"
   }
 }

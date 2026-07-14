@@ -3,8 +3,7 @@
 // (resilience requirement). Vanilla TS, .stldr- prefixed classes; the
 // summary is ALWAYS rendered as text (never innerHTML from generated content).
 import type { Message, TLDRSummary } from "../shared/types";
-
-const t = (key: string, subs?: string[]) => chrome.i18n.getMessage(key, subs);
+import { t } from "../shared/i18n";
 
 function openOptions(): void {
   const message: Message = { type: "openOptions" };

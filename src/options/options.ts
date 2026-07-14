@@ -23,7 +23,7 @@ import type {
   ReviewSelectionConfig,
   SelectionMode,
 } from "../shared/types";
-import type { LanguageCode } from "../shared/i18n";
+import { initI18n, t, type LanguageCode } from "../shared/i18n";
 
 // ---------- profile-type UI presets ----------
 interface KindPreset {
@@ -45,9 +45,12 @@ const KIND_PRESETS: Record<string, KindPreset> = {
 
 const DEFAULT_PRESET_NAME = "Default";
 
-for (const el of document.querySelectorAll<HTMLElement>("[data-i18n]")) {
-  const key = el.dataset["i18n"];
-  if (key) el.textContent = chrome.i18n.getMessage(key);
+// Applied after initI18n (F8: UI follows the selected language, not the browser's)
+function applyTranslations(): void {
+  for (const el of document.querySelectorAll<HTMLElement>("[data-i18n]")) {
+    const key = el.dataset["i18n"];
+    if (key) el.textContent = t(key);
+  }
 }
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -67,6 +70,7 @@ const presetNameInput = $<HTMLInputElement>("presetName");
 let settings: ProviderSettings = { activeProfileId: "", profiles: [] };
 let presets: PresetMap = {};
 let editingId: string | null = null; // null = new profile
+let currentLanguage: LanguageCode = "en";
 
 // ---------- provider profiles ----------
 
@@ -74,7 +78,7 @@ function applyKindPreset(): void {
   const preset = KIND_PRESETS[presetSelect.value]!;
   baseUrlRow.classList.toggle("hidden", preset.baseUrl === "fixed");
   baseUrlInput.value = preset.defaultBaseUrl;
-  baseUrlHint.textContent = preset.hintKey ? chrome.i18n.getMessage(preset.hintKey) : "";
+  baseUrlHint.textContent = preset.hintKey ? t(preset.hintKey) : "";
   if (!modelInput.value) modelInput.value = preset.defaultModel;
 }
 
@@ -87,7 +91,7 @@ function renderProfiles(): void {
     radio.type = "radio";
     radio.name = "activeProfile";
     radio.checked = profile.id === settings.activeProfileId;
-    radio.title = chrome.i18n.getMessage("optionsActive");
+    radio.title = t("optionsActive");
     radio.addEventListener("change", () => {
       settings.activeProfileId = profile.id;
       void persistProfiles();
@@ -103,12 +107,12 @@ function renderProfiles(): void {
 
     const editBtn = document.createElement("button");
     editBtn.textContent = "✎";
-    editBtn.title = chrome.i18n.getMessage("optionsEdit");
+    editBtn.title = t("optionsEdit");
     editBtn.addEventListener("click", () => startEdit(profile));
 
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "✕";
-    deleteBtn.title = chrome.i18n.getMessage("optionsDelete");
+    deleteBtn.title = t("optionsDelete");
     deleteBtn.addEventListener("click", () => {
       settings.profiles = settings.profiles.filter((p) => p.id !== profile.id);
       if (settings.activeProfileId === profile.id) {
@@ -171,13 +175,13 @@ async function saveProfile(): Promise<void> {
   const preset = KIND_PRESETS[presetSelect.value]!;
   const baseUrl = preset.baseUrl === "fixed" ? "" : baseUrlInput.value.trim();
   if (preset.baseUrl === "required" && !baseUrl) {
-    flash(statusEl, chrome.i18n.getMessage("optionsEndpointRequired"), "#cd5444");
+    flash(statusEl, t("optionsEndpointRequired"), "#cd5444");
     return;
   }
 
   // Custom endpoint: request the host permission ONLY for that origin
   if (baseUrl && !(await requestOriginPermission(baseUrl))) {
-    flash(statusEl, chrome.i18n.getMessage("optionsPermissionDenied"), "#cd5444");
+    flash(statusEl, t("optionsPermissionDenied"), "#cd5444");
     return;
   }
 
@@ -197,7 +201,7 @@ async function saveProfile(): Promise<void> {
 
   await persistProfiles();
   resetForm();
-  flash(statusEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+  flash(statusEl, t("optionsSaved"), "#a4d007");
 }
 
 async function persistProfiles(): Promise<void> {
@@ -259,13 +263,13 @@ async function presetLoad(): Promise<void> {
   if (!config) return;
   writeSelectionForm(config);
   await saveSelectionConfig(config);
-  flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+  flash(statusGeneralEl, t("optionsSaved"), "#a4d007");
 }
 
 async function presetSave(): Promise<void> {
   const name = presetNameInput.value.trim() || presetListSelect.value;
   if (!name || name === DEFAULT_PRESET_NAME) {
-    flash(statusGeneralEl, chrome.i18n.getMessage("optionsPresetNameRequired"), "#cd5444");
+    flash(statusGeneralEl, t("optionsPresetNameRequired"), "#cd5444");
     return;
   }
   presets[name] = readSelectionForm();
@@ -273,7 +277,7 @@ async function presetSave(): Promise<void> {
   renderPresetList();
   presetListSelect.value = name;
   presetNameInput.value = "";
-  flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+  flash(statusGeneralEl, t("optionsSaved"), "#a4d007");
 }
 
 async function presetDelete(): Promise<void> {
@@ -307,9 +311,9 @@ async function presetImport(file: File): Promise<void> {
     }
     await savePresets(presets);
     renderPresetList();
-    flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+    flash(statusGeneralEl, t("optionsSaved"), "#a4d007");
   } catch {
-    flash(statusGeneralEl, chrome.i18n.getMessage("optionsPresetImportError"), "#cd5444");
+    flash(statusGeneralEl, t("optionsPresetImportError"), "#cd5444");
   }
 }
 
@@ -317,11 +321,17 @@ async function presetImport(file: File): Promise<void> {
 
 async function saveGeneral(): Promise<void> {
   await saveSelectionConfig(readSelectionForm());
-  await saveLanguage($<HTMLSelectElement>("language").value as LanguageCode);
+  const newLanguage = $<HTMLSelectElement>("language").value as LanguageCode;
+  await saveLanguage(newLanguage);
   const ttl = Number($<HTMLInputElement>("cacheTtl").value);
   await saveCacheTtlHours(Number.isFinite(ttl) && ttl >= 0 ? Math.min(720, ttl) : 24);
   await chrome.storage.local.set({ autoGenerate: $<HTMLInputElement>("autoGenerate").checked });
-  flash(statusGeneralEl, chrome.i18n.getMessage("optionsSaved"), "#a4d007");
+  if (newLanguage !== currentLanguage) {
+    // Re-render the whole page in the new language
+    location.reload();
+    return;
+  }
+  flash(statusGeneralEl, t("optionsSaved"), "#a4d007");
 }
 
 function flash(el: HTMLElement, text: string, color: string): void {
@@ -331,6 +341,11 @@ function flash(el: HTMLElement, text: string, color: string): void {
 }
 
 async function init(): Promise<void> {
+  // F8 — i18n first: everything rendered below uses t()
+  currentLanguage = await loadLanguage();
+  initI18n(currentLanguage);
+  applyTranslations();
+
   settings = await loadProviderSettings();
   renderProfiles();
   resetForm();
@@ -339,7 +354,7 @@ async function init(): Promise<void> {
   renderPresetList();
 
   writeSelectionForm(await loadSelectionConfig());
-  $<HTMLSelectElement>("language").value = await loadLanguage();
+  $<HTMLSelectElement>("language").value = currentLanguage;
   $<HTMLInputElement>("cacheTtl").value = String(await loadCacheTtlHours());
   const stored = await chrome.storage.local.get("autoGenerate");
   $<HTMLInputElement>("autoGenerate").checked = stored["autoGenerate"] === true;

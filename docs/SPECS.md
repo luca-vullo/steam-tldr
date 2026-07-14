@@ -50,6 +50,8 @@ This is the most important design decision of the project.
   2. the language of the extension UI (widget and options page, via `chrome.i18n`).
 
   Input reviews are **not** filtered by language: they are read in all languages (`language=all`) for the widest, most representative sample; the model summarizes multilingual input in the chosen language.
+
+  Implementation note: `chrome.i18n.getMessage` always follows the *browser* locale, so the UI uses a runtime translation layer fed by the same `_locales` files. The language selector's own label is deliberately kept in English, so the row stays findable even if the UI ends up in the wrong language.
 - **F9 — Configuration presets**: the review selection settings (F2) — mode, count, date range, weights — can be saved as named presets and reloaded from the options page, with JSON export/import to share them across installations. A built-in "Default" preset restores the recommended values.
 
 ### Post-MVP (v0.2+)

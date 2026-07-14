@@ -193,7 +193,9 @@
     <h2 data-i18n="optionsGeneralSection"></h2>
     <div class="row">
       <div>
-        <label for="language" data-i18n="optionsLanguage"></label>
+        <!-- Deliberately not localized: if the UI ends up in the wrong
+             language, this row must stay findable by anyone -->
+        <label for="language">Language (UI and summary)</label>
         <select id="language">
           <option value="it">Italiano</option>
           <option value="en">English</option>

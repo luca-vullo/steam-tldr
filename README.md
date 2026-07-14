@@ -10,9 +10,11 @@ Bring your own AI: the extension works with **your own API key** on the provider
 
 ## Screenshots
 
-| Widget on a game page | Options |
+![TL;DR widget in action on a Steam game page](docs/assets/screenshot-widget.gif)
+
+| Provider profiles | Review selection & presets |
 |---|---|
-| ![TL;DR widget open on a Steam game page](docs/assets/screenshot-widget.png) | ![Options page with provider profiles](docs/assets/screenshot-options.png) |
+| ![Options: AI provider profiles](docs/assets/screenshot-options-1.png) | ![Options: review selection, scoring weights and presets](docs/assets/screenshot-options-2.png) |
 
 ## How it works
 

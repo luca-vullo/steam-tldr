@@ -1,6 +1,6 @@
 {
   "name": "steam-tldr",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "description": "Chrome extension that generates an AI TL;DR of a game's recent Steam reviews, right on its store page",
   "type": "module",

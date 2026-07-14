@@ -7,6 +7,12 @@ export default defineManifest({
   description: "__MSG_extDescription__",
   version: pkg.version,
   default_locale: "en",
+  icons: {
+    16: "icons/icon16.png",
+    32: "icons/icon32.png",
+    48: "icons/icon48.png",
+    128: "icons/icon128.png",
+  },
   permissions: ["storage"],
   host_permissions: [
     "https://store.steampowered.com/appreviews/*",

@@ -1,3 +1,5 @@
+<img src="docs/assets/logo.png" width="96" align="right" alt="Steam TL;DR logo" />
+
 # Steam TL;DR
 
 A Chrome extension (Manifest V3) that generates an **AI summary of a game's recent Steam reviews**, right on its store page. A side widget shows "what players think right now" in a few lines: a one-line verdict, sentiment, recurring strengths and weaknesses, and notes about recent patches when reviews mention them.
@@ -5,6 +7,12 @@ A Chrome extension (Manifest V3) that generates an **AI summary of a game's rece
 Bring your own AI: the extension works with **your own API key** on the provider you prefer — Anthropic Claude, Claude deployed on Azure AI Foundry, OpenAI (official or Azure), Google Gemini, or a local OpenAI-compatible model (Ollama, LM Studio). No account, no backend, no telemetry.
 
 > ⚠️ **Compliance first**: the extension **never posts anything to Steam**. The summary is rendered locally in your browser only. Publishing bot-generated reviews would violate Steam's rules ("Do not artificially influence reviews"). See [docs/SPECS.md](docs/SPECS.md#2-compliance-with-steam-guidelines).
+
+## Screenshots
+
+| Widget on a game page | Options |
+|---|---|
+| ![TL;DR widget open on a Steam game page](docs/assets/screenshot-widget.png) | ![Options page with provider profiles](docs/assets/screenshot-options.png) |
 
 ## How it works
 

@@ -81,6 +81,7 @@
       .check { display: flex; align-items: center; gap: 0.5rem; margin-top: 1rem; }
       .check input { width: auto; margin: 0; accent-color: #66c0f4; }
       .buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+      .has-tip { cursor: help; text-decoration: underline dotted rgba(102, 192, 244, 0.6); text-underline-offset: 3px; }
     </style>
   </head>
   <body>
@@ -127,7 +128,7 @@
 
     <div class="row">
       <div>
-        <label for="mode" data-i18n="optionsMode"></label>
+        <label for="mode" data-i18n="optionsMode" data-i18n-title="tipMode" class="has-tip"></label>
         <select id="mode">
           <option value="hybrid">Hybrid</option>
           <option value="recent_scored">Recent + scoring</option>
@@ -135,18 +136,18 @@
         </select>
       </div>
       <div>
-        <label for="numReviews" data-i18n="optionsNumReviews"></label>
+        <label for="numReviews" data-i18n="optionsNumReviews" data-i18n-title="tipNumReviews" class="has-tip"></label>
         <input type="number" id="numReviews" min="5" max="200" />
       </div>
     </div>
 
     <div class="row">
       <div>
-        <label for="dayRange" data-i18n="optionsDayRange"></label>
+        <label for="dayRange" data-i18n="optionsDayRange" data-i18n-title="tipDayRange" class="has-tip"></label>
         <input type="number" id="dayRange" min="1" max="365" />
       </div>
       <div>
-        <label for="minChars" data-i18n="optionsMinChars"></label>
+        <label for="minChars" data-i18n="optionsMinChars" data-i18n-title="tipMinChars" class="has-tip"></label>
         <input type="number" id="minChars" min="0" max="500" />
       </div>
     </div>
@@ -154,19 +155,19 @@
     <h3 data-i18n="optionsWeightsTitle"></h3>
     <div class="grid4">
       <div>
-        <label for="wHelpfulness" data-i18n="optionsWeightHelpfulness"></label>
+        <label for="wHelpfulness" data-i18n="optionsWeightHelpfulness" data-i18n-title="tipWeightHelpfulness" class="has-tip"></label>
         <input type="number" id="wHelpfulness" min="0" max="1" step="0.05" />
       </div>
       <div>
-        <label for="wPlaytime" data-i18n="optionsWeightPlaytime"></label>
+        <label for="wPlaytime" data-i18n="optionsWeightPlaytime" data-i18n-title="tipWeightPlaytime" class="has-tip"></label>
         <input type="number" id="wPlaytime" min="0" max="1" step="0.05" />
       </div>
       <div>
-        <label for="wSubstance" data-i18n="optionsWeightSubstance"></label>
+        <label for="wSubstance" data-i18n="optionsWeightSubstance" data-i18n-title="tipWeightSubstance" class="has-tip"></label>
         <input type="number" id="wSubstance" min="0" max="1" step="0.05" />
       </div>
       <div>
-        <label for="wFreshness" data-i18n="optionsWeightFreshness"></label>
+        <label for="wFreshness" data-i18n="optionsWeightFreshness" data-i18n-title="tipWeightFreshness" class="has-tip"></label>
         <input type="number" id="wFreshness" min="0" max="1" step="0.05" />
       </div>
     </div>

@@ -190,5 +190,29 @@
   },
   "panelGeneratedAt": {
     "message": "Generiert: $1."
+  },
+  "tipMode": {
+    "message": "Hybrid (empfohlen): kombiniert die nützlichsten Rezensionen im Zeitraum mit den neuesten und sortiert mit den Gewichten unten. Recent + scoring: nur die neuesten, sortiert mit den Gewichten. Steam native: nutzt Steams eigene Nützlichkeits-Sortierung, ohne Gewichte."
+  },
+  "tipNumReviews": {
+    "message": "Wie viele Rezensionen an das Modell gesendet werden. Mehr Rezensionen = repräsentativere Zusammenfassung, aber höhere Kosten pro Generierung (~200-300 Tokens pro Stück)."
+  },
+  "tipDayRange": {
+    "message": "Zeitfenster für die Komponente \"nützlichste\" (Modi Hybrid und Steam native). Begrenzt nicht die \"neuesten\" Rezensionen."
+  },
+  "tipMinChars": {
+    "message": "Kürzere Rezensionen werden vor der Auswahl verworfen (filtert inhaltslose \"+1\")."
+  },
+  "tipWeightHelpfulness": {
+    "message": "Gewicht der Nützlichkeitsbewertung von Steam (\"Hilfreich\"-Stimmen anderer Nutzer). Rezensionen ohne Stimmen werden nicht benachteiligt."
+  },
+  "tipWeightPlaytime": {
+    "message": "Gewicht der Spielstunden des Autors: mehr Stunden = fundiertere Erfahrung."
+  },
+  "tipWeightSubstance": {
+    "message": "Gewicht der Textlänge: bevorzugt ausführliche Rezensionen gegenüber Einzeilern."
+  },
+  "tipWeightFreshness": {
+    "message": "Gewicht der Aktualität: bevorzugt die neuesten Rezensionen im Zeitraum."
   }
 }

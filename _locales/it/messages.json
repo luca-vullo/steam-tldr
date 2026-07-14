@@ -190,5 +190,29 @@
   },
   "panelGeneratedAt": {
     "message": "Generato: $1."
+  },
+  "tipMode": {
+    "message": "Hybrid (consigliata): unisce le recensioni più utili nel range di date e le più recenti, poi ordina con i pesi qui sotto. Recent + scoring: parte solo dalle più recenti e ordina con i pesi. Steam native: usa l'ordinamento per utilità fatto da Steam, senza pesi."
+  },
+  "tipNumReviews": {
+    "message": "Quante recensioni vengono inviate al modello. Più recensioni = riassunto più rappresentativo ma costo maggiore per generazione (~200-300 token l'una)."
+  },
+  "tipDayRange": {
+    "message": "Finestra temporale per la componente \"più utili\" (modalità Hybrid e Steam native). Non limita le recensioni \"più recenti\"."
+  },
+  "tipMinChars": {
+    "message": "Le recensioni più corte di così vengono scartate prima della selezione (filtra i \"+1\" senza contenuto)."
+  },
+  "tipWeightHelpfulness": {
+    "message": "Quanto conta il punteggio di utilità assegnato da Steam (voti \"utile\" degli altri utenti). Le recensioni senza voti non vengono penalizzate."
+  },
+  "tipWeightPlaytime": {
+    "message": "Quanto contano le ore di gioco del recensore: più ore = esperienza più solida."
+  },
+  "tipWeightSubstance": {
+    "message": "Quanto conta la lunghezza del testo: privilegia recensioni argomentate rispetto a battute brevi."
+  },
+  "tipWeightFreshness": {
+    "message": "Quanto conta la data: privilegia le recensioni più recenti dentro il range di date."
   }
 }

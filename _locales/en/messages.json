@@ -190,5 +190,29 @@
   },
   "panelGeneratedAt": {
     "message": "Generated: $1."
+  },
+  "tipMode": {
+    "message": "Hybrid (recommended): merges the most helpful reviews within the date range with the most recent ones, then ranks with the weights below. Recent + scoring: starts from recent reviews only and ranks with the weights. Steam native: uses Steam's own helpfulness ranking, no weights."
+  },
+  "tipNumReviews": {
+    "message": "How many reviews are sent to the model. More reviews = more representative summary but higher cost per generation (~200-300 tokens each)."
+  },
+  "tipDayRange": {
+    "message": "Time window for the \"most helpful\" component (Hybrid and Steam native modes). It does not limit the \"most recent\" reviews."
+  },
+  "tipMinChars": {
+    "message": "Reviews shorter than this are discarded before selection (filters contentless \"+1\" reviews)."
+  },
+  "tipWeightHelpfulness": {
+    "message": "How much Steam's helpfulness score matters (other users' \"helpful\" votes). Unvoted reviews are not penalized."
+  },
+  "tipWeightPlaytime": {
+    "message": "How much the reviewer's hours played matter: more hours = more grounded experience."
+  },
+  "tipWeightSubstance": {
+    "message": "How much text length matters: favors substantial reviews over short quips."
+  },
+  "tipWeightFreshness": {
+    "message": "How much recency matters: favors the newest reviews within the date range."
   }
 }

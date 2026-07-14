@@ -190,5 +190,29 @@
   },
   "panelGeneratedAt": {
     "message": "Généré : $1."
+  },
+  "tipMode": {
+    "message": "Hybrid (recommandé) : combine les avis les plus utiles de la plage de dates avec les plus récents, puis classe avec les poids ci-dessous. Recent + scoring : part uniquement des avis récents et classe avec les poids. Steam native : utilise le classement d'utilité de Steam, sans poids."
+  },
+  "tipNumReviews": {
+    "message": "Nombre d'avis envoyés au modèle. Plus d'avis = résumé plus représentatif mais coût plus élevé par génération (~200-300 tokens chacun)."
+  },
+  "tipDayRange": {
+    "message": "Fenêtre temporelle pour la composante « plus utiles » (modes Hybrid et Steam native). Ne limite pas les avis « plus récents »."
+  },
+  "tipMinChars": {
+    "message": "Les avis plus courts sont écartés avant la sélection (filtre les « +1 » sans contenu)."
+  },
+  "tipWeightHelpfulness": {
+    "message": "Poids du score d'utilité de Steam (votes « utile » des autres utilisateurs). Les avis sans votes ne sont pas pénalisés."
+  },
+  "tipWeightPlaytime": {
+    "message": "Poids des heures de jeu de l'auteur : plus d'heures = expérience plus solide."
+  },
+  "tipWeightSubstance": {
+    "message": "Poids de la longueur du texte : favorise les avis argumentés plutôt que les phrases courtes."
+  },
+  "tipWeightFreshness": {
+    "message": "Poids de la date : favorise les avis les plus récents dans la plage de dates."
   }
 }

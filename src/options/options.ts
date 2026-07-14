@@ -51,6 +51,11 @@ function applyTranslations(): void {
     const key = el.dataset["i18n"];
     if (key) el.textContent = t(key);
   }
+  // Tooltips explaining what each setting does
+  for (const el of document.querySelectorAll<HTMLElement>("[data-i18n-title]")) {
+    const key = el.dataset["i18nTitle"];
+    if (key) el.title = t(key);
+  }
 }
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;

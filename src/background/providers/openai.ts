@@ -17,11 +17,7 @@ export const openAICompatProvider: LLMProvider = {
   kind: "openai_compat",
 
   async summarize(request: SummarizeRequest, profile: ProviderProfile): Promise<TLDRSummary> {
-    // Tolerate a full URL pasted by the user: we append the path ourselves
-    const baseUrl = (profile.baseUrl || DEFAULT_BASE_URL)
-      .replace(/\/chat\/completions\/?$/, "")
-      .replace(/\/$/, "");
-    const url = `${baseUrl}/chat/completions`;
+    const url = `${normalizeBaseUrl(profile.baseUrl)}/chat/completions`;
 
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (profile.apiKey) {
@@ -80,6 +76,30 @@ export const openAICompatProvider: LLMProvider = {
     return parseTLDRSummary(content);
   },
 };
+
+// Tolerates URLs pasted straight from provider portals:
+// - strips a trailing /chat/completions (we append the path ourselves)
+// - Azure resources expose the OpenAI-compatible API under /openai/v1, so a
+//   bare resource URL (https://NAME.openai.azure.com or
+//   https://NAME.services.ai.azure.com) gets the path added automatically;
+//   explicit paths (e.g. classic /openai/deployments/...) are left untouched
+function normalizeBaseUrl(raw: string): string {
+  const base = (raw || DEFAULT_BASE_URL)
+    .replace(/\/chat\/completions\/?$/, "")
+    .replace(/\/$/, "");
+  try {
+    const url = new URL(base);
+    const isAzure = /\.(openai\.azure\.com|services\.ai\.azure\.com|cognitiveservices\.azure\.com)$/.test(
+      url.hostname,
+    );
+    if (isAzure && !url.pathname.includes("/openai/")) {
+      return url.origin + "/openai/v1";
+    }
+  } catch {
+    // not a valid URL: let the fetch fail with a clear error
+  }
+  return base;
+}
 
 async function safeText(response: Response): Promise<string> {
   try {

@@ -86,6 +86,12 @@ The extension is designed to be **audited in one sitting** (~1,500 lines of Type
 
 Issues and pull requests are welcome. Keep in mind the project's hard boundaries: no writes to Steam, no telemetry, no bundled API keys. Please run `npm run build` (typecheck included) before submitting.
 
+## Support the project
+
+Steam TL;DR is free and MIT-licensed, and will stay that way. If it saves you time (or a bad purchase), you can support development on Ko-fi:
+
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20this%20project-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/lucafuncoder)
+
 ## License
 
 [MIT](LICENSE) © Luca Vullo

@@ -84,7 +84,7 @@ This is the most important design decision of the project.
 | M2 | F3 + F7 (partial): provider abstraction + Anthropic adapter + summary prompt | Structured TL;DR JSON in console | ✅ Done |
 | M3 | F4 + F5: UI widget and options page | Full end-to-end flow on test games | ✅ Done |
 | M4 | F6 + F8 + F9 + polish: cache, errors, i18n in 5 languages, presets | v0.1 usable daily | ✅ Done |
-| M5 | F7 (complete): OpenAI, Gemini and local adapters verified end-to-end | Summary verified with each provider | 🟡 Adapters implemented; verified on Anthropic API and Claude on Azure AI Foundry; OpenAI/Gemini/local pending verification |
+| M5 | F7 (complete): all provider adapters verified end-to-end | Summary verified with each provider | 🟢 Verified: Anthropic API, Claude on Azure AI Foundry, Google Gemini, local (Ollama + gemma3). OpenAI-compatible protocol verified via Azure AI Foundry and local servers; the official api.openai.com endpoint uses the same code path and awaits community confirmation |
 
 ## 6. Risks
 

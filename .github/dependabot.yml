@@ -8,6 +8,14 @@ updates:
     groups:
       npm-dependencies:
         patterns: ["*"]
+    ignore:
+      # Vite 8 breaks the CRXJS service-worker wiring: the SW loader ends up
+      # importing the content-script bundle (same-named entries), the SW
+      # crashes on DOM access and the extension silently stops responding.
+      # The build succeeds, so CI cannot catch it. Re-evaluate on new
+      # @crxjs/vite-plugin releases before unpinning.
+      - dependency-name: vite
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: /

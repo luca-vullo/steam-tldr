@@ -13,7 +13,7 @@
     "@crxjs/vite-plugin": "^2.2.0",
     "@types/chrome": "^0.2.2",
     "typescript": "^7.0.2",
-    "vite": "^8.1.4"
+    "vite": "^6.4.3"
   },
   "dependencies": {
     "@anthropic-ai/foundry-sdk": "^0.4.0",

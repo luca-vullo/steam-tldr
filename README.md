@@ -2,6 +2,10 @@
 
 # Steam TL;DR
 
+[![CI](https://github.com/luca-vullo/steam-tldr/actions/workflows/ci.yml/badge.svg)](https://github.com/luca-vullo/steam-tldr/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/luca-vullo/steam-tldr)](https://github.com/luca-vullo/steam-tldr/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A Chrome extension (Manifest V3) that generates an **AI summary of a game's recent Steam reviews**, right on its store page. A side widget shows "what players think right now" in a few lines: a one-line verdict, sentiment, recurring strengths and weaknesses, and notes about recent patches when reviews mention them.
 
 Bring your own AI: the extension works with **your own API key** on the provider you prefer — Anthropic Claude, Claude deployed on Azure AI Foundry, OpenAI (official or Azure), Google Gemini, or a local OpenAI-compatible model (Ollama, LM Studio). No account, no backend, no telemetry.

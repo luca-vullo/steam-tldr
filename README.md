@@ -1,10 +1,14 @@
-<img src="docs/assets/logo.png" width="96" align="right" alt="Steam TL;DR logo" />
+<div align="center">
 
-# Steam TL;DR
+<img src="docs/assets/logo.png" width="110" alt="Steam TL;DR logo" />
+
+# Steam TL;DR — AI Steam Review Summarizer
 
 [![CI](https://github.com/luca-vullo/steam-tldr/actions/workflows/ci.yml/badge.svg)](https://github.com/luca-vullo/steam-tldr/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/luca-vullo/steam-tldr)](https://github.com/luca-vullo/steam-tldr/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+</div>
 
 **The problem**: a Steam page tells you a game is "Very Positive". It doesn't tell you *why*, what players actually complain about, or whether things changed after the last patch.
 

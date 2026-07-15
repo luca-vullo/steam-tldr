@@ -6,15 +6,17 @@
 [![Release](https://img.shields.io/github/v/release/luca-vullo/steam-tldr)](https://github.com/luca-vullo/steam-tldr/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A Chrome extension (Manifest V3) that generates an **AI summary of a game's recent Steam reviews**, right on its store page. A side widget shows "what players think right now" in a few lines: a one-line verdict, sentiment, recurring strengths and weaknesses, and notes about recent patches when reviews mention them.
+**The problem**: a Steam page tells you a game is "Very Positive". It doesn't tell you *why*, what players actually complain about, or whether things changed after the last patch.
+
+**The solution**: one click for an AI summary of the most recent and most helpful reviews, right on the store page — a one-line verdict, sentiment, recurring strengths and weaknesses, and notes about recent patches when reviews mention them.
+
+![TL;DR widget in action on a Steam game page](docs/assets/screenshot-widget.gif)
 
 Bring your own AI: the extension works with **your own API key** on the provider you prefer — Anthropic Claude, Claude deployed on Azure AI Foundry, OpenAI (official or Azure), Google Gemini, or a local OpenAI-compatible model (Ollama, LM Studio). No account, no backend, no telemetry.
 
 > ⚠️ **Compliance first**: the extension **never posts anything to Steam**. The summary is rendered locally in your browser only. Publishing bot-generated reviews would violate Steam's rules ("Do not artificially influence reviews"). See [docs/SPECS.md](docs/SPECS.md#2-compliance-with-steam-guidelines).
 
 ## Screenshots
-
-![TL;DR widget in action on a Steam game page](docs/assets/screenshot-widget.gif)
 
 | Provider profiles | Review selection & presets |
 |---|---|
@@ -85,6 +87,10 @@ The extension is designed to be **audited in one sitting** (~1,500 lines of Type
 - [docs/SPECS.md](docs/SPECS.md) — functional specification, Steam compliance, roadmap
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — technical architecture, data flows, provider layer
 - [docs/SECURITY.md](docs/SECURITY.md) — threat model and audit guide
+
+## How this was built
+
+Most of the code was written with AI assistance (Claude Code), following a **spec-driven workflow**: the [functional spec](docs/SPECS.md), the [architecture](docs/ARCHITECTURE.md) and the [threat model](docs/SECURITY.md) came before the code, every AI-produced change was reviewed and tested end-to-end across five provider setups, and the commit history documents the reasoning behind each decision. That's also why the security doc exposes [mechanically verifiable invariants](docs/SECURITY.md#5-invariants-you-can-verify-mechanically): you don't have to trust the author — or the AI — you can check.
 
 ## Contributing
 

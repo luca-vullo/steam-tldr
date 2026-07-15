@@ -17,7 +17,18 @@ function extractGameName(): string {
 }
 
 function send(message: Message, onResponse: (r: MessageResponse) => void): void {
-  chrome.runtime.sendMessage(message, onResponse);
+  chrome.runtime.sendMessage(message, (response?: MessageResponse) => {
+    // If the service worker failed or the channel closed, Chrome invokes the
+    // callback with no response and sets lastError: surface an error instead
+    // of leaving the widget spinning forever.
+    if (chrome.runtime.lastError || !response) {
+      const reason = chrome.runtime.lastError?.message ?? "no response from service worker";
+      console.error("[steam-tldr]", reason);
+      onResponse({ type: "error", code: "generic", message: reason });
+      return;
+    }
+    onResponse(response);
+  });
 }
 
 const appid = extractAppId(location.href);

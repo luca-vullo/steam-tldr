@@ -3,7 +3,12 @@
 // (resilience requirement). Vanilla TS, .stldr- prefixed classes; the
 // summary is ALWAYS rendered as text (never innerHTML from generated content).
 import { ALL_ASPECTS, type AspectId, type AspectSummary, type Message, type TLDRSummary } from "../shared/types";
-import { saveFocusAspects } from "../shared/settings";
+import {
+  CUSTOM_ASPECT_MAX_CHARS,
+  sanitizeCustomAspect,
+  saveCustomAspect,
+  saveFocusAspects,
+} from "../shared/settings";
 import { t } from "../shared/i18n";
 
 function openOptions(): void {
@@ -132,6 +137,23 @@ const CSS = `
   color: #fff;
   border-color: #66c0f4;
 }
+.stldr-chip-input {
+  border: 1px dashed rgba(103, 193, 245, 0.35);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #c6d4df;
+  font-size: 11px;
+  padding: 3px 9px;
+  width: 130px;
+}
+.stldr-chip-input::placeholder { color: #8f98a0; }
+.stldr-chip-input:focus { outline: none; border-color: #66c0f4; }
+.stldr-chip-input.stldr-chip-on {
+  border-style: solid;
+  border-color: #66c0f4;
+  background: rgba(103, 193, 245, 0.2);
+  color: #fff;
+}
 
 .stldr-aspects { margin-top: 14px; }
 .stldr-aspect { margin-bottom: 7px; font-size: 12.5px; }
@@ -232,11 +254,13 @@ export interface TLDRWidget {
   setError(message: string, missingKey: boolean): void;
   open(): void;
   getAspects(): AspectId[];
+  getCustomAspect(): string;
 }
 
 export function createWidget(
   gameName: string,
   initialAspects: AspectId[],
+  initialCustomAspect: string,
   onGenerate: (force?: boolean) => void,
 ): TLDRWidget {
   const style = document.createElement("style");
@@ -299,6 +323,23 @@ export function createWidget(
     });
     chips.append(chip);
   }
+
+  // Custom aspect: a free-text chip for the user's personal trigger
+  // (e.g. "microtransactions", "Steam Deck", "couch co-op")
+  const customInput = document.createElement("input");
+  customInput.type = "text";
+  customInput.className =
+    "stldr-chip-input" + (initialCustomAspect ? " stldr-chip-on" : "");
+  customInput.maxLength = CUSTOM_ASPECT_MAX_CHARS;
+  customInput.placeholder = t("aspectCustomPlaceholder");
+  customInput.value = initialCustomAspect;
+  customInput.addEventListener("input", () => {
+    customInput.classList.toggle("stldr-chip-on", customInput.value.trim().length > 0);
+  });
+  customInput.addEventListener("change", () => {
+    void saveCustomAspect(customInput.value);
+  });
+  chips.append(customInput);
 
   const body = document.createElement("div");
 
@@ -381,12 +422,12 @@ export function createWidget(
       buildList("stldr-cons", t("panelCons"), summary.cons),
     );
 
-    // v0.4 — one block per requested aspect, in chip order
+    // v0.4 — one block per requested aspect, in chip order (custom last)
     if (summary.aspects.length > 0) {
       const aspectsEl = document.createElement("div");
       aspectsEl.className = "stldr-aspects";
       const byId = new Map(summary.aspects.map((a) => [a.id, a]));
-      for (const id of ALL_ASPECTS) {
+      for (const id of [...ALL_ASPECTS, "custom" as const]) {
         const aspect = byId.get(id);
         if (!aspect) continue;
         const row = document.createElement("div");
@@ -395,7 +436,10 @@ export function createWidget(
         dot.className = "stldr-aspect-dot";
         dot.style.background = ASPECT_SENTIMENT_COLORS[aspect.sentiment];
         const label = document.createElement("b");
-        label.textContent = t(ASPECT_LABEL_KEYS[id]) + ": ";
+        label.textContent =
+          (id === "custom"
+            ? sanitizeCustomAspect(customInput.value) || t("aspectCustomPlaceholder")
+            : t(ASPECT_LABEL_KEYS[id])) + ": ";
         row.append(dot, label, document.createTextNode(aspect.note));
         aspectsEl.append(row);
       }
@@ -444,7 +488,11 @@ export function createWidget(
     return ALL_ASPECTS.filter((a) => selectedAspects.has(a));
   }
 
-  return { setIdle, setLoading, setResult, setError, open, getAspects };
+  function getCustomAspect(): string {
+    return sanitizeCustomAspect(customInput.value);
+  }
+
+  return { setIdle, setLoading, setResult, setError, open, getAspects, getCustomAspect };
 }
 
 function buildList(className: string, heading: string, items: string[]): HTMLElement {

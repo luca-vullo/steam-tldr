@@ -53,7 +53,8 @@ export const ALL_ASPECTS: AspectId[] = [
 ];
 
 export interface AspectSummary {
-  id: AspectId;
+  // "custom" is the user-defined free-text aspect (one per request)
+  id: AspectId | "custom";
   // "not_mentioned" is the anti-hallucination valve: if recent reviews don't
   // meaningfully discuss the aspect, the model must say so, not invent.
   sentiment: "positive" | "mixed" | "negative" | "not_mentioned";
@@ -103,6 +104,7 @@ export type Message =
       gameName: string;
       force?: boolean;
       aspects?: AspectId[]; // v0.4 — requested focus aspects
+      customAspect?: string; // v0.4 — user-defined aspect topic (max 40 chars)
     }
   // chrome-extension:// pages can't be navigated to from a web page
   // (ERR_BLOCKED_BY_CLIENT), so the widget asks the service worker to open

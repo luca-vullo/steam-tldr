@@ -6,6 +6,7 @@ import {
   loadProviderSettings,
   loadSelectionConfig,
   sanitizeAspects,
+  sanitizeCustomAspect,
 } from "../shared/settings";
 import { collectReviews } from "./selection";
 import { summarizeReviews } from "./summarizer";
@@ -32,6 +33,7 @@ chrome.runtime.onMessage.addListener(
           message.gameName,
           message.force === true,
           sanitizeAspects(message.aspects),
+          sanitizeCustomAspect(message.customAspect),
         )
           .then(sendResponse)
           .catch((err: unknown) =>
@@ -57,6 +59,7 @@ async function handleSummarize(
   gameName: string,
   force: boolean,
   aspects: AspectId[],
+  customAspect: string,
 ): Promise<MessageResponse> {
   const providerSettings = await loadProviderSettings();
   const profile = activeProfile(providerSettings);
@@ -65,7 +68,9 @@ async function handleSummarize(
 
   // F6 — cache first ("Regenerate" bypasses it with force); the requested
   // aspects are part of the key so toggling chips regenerates
-  const aspectsKey = aspects.length > 0 ? [...aspects].sort().join("+") : "none";
+  const aspectParts = [...aspects].sort() as string[];
+  if (customAspect) aspectParts.push(`custom=${customAspect.toLowerCase()}`);
+  const aspectsKey = aspectParts.length > 0 ? aspectParts.join("+") : "none";
   const key = cacheKey(
     appid,
     language,
@@ -109,6 +114,7 @@ async function handleSummarize(
     reviews: selected,
     language,
     aspects,
+    customAspect,
   });
 
   const createdAt = Date.now();

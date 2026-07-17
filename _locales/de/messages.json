@@ -253,5 +253,8 @@
   },
   "aspectMultiplayer": {
     "message": "Multiplayer"
+  },
+  "aspectCustomPlaceholder": {
+    "message": "Eigenes Thema…"
   }
 }

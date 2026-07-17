@@ -63,7 +63,7 @@ Shipped in **v0.3** (driven by community feedback on what makes Steam reviews ha
 
 Shipped in **v0.4**:
 
-- **Aspect-focused summaries ("filter for my playstyle")**: toggle chips in the widget — Performance, Story, Controls & UI, Pacing & grind, Multiplayer — and the summary gains one block per selected aspect with its own sentiment and a note on what reviews actually say about it. If recent reviews don't meaningfully discuss an aspect, the model must mark it `not_mentioned` rather than invent. The selection persists across games and is part of the cache key. This separates *what reviewers say* from *whether it matters to you* (one player's "repetitive" is another player's "relaxing").
+- **Aspect-focused summaries ("filter for my playstyle")**: toggle chips in the widget — Performance, Story, Controls & UI, Pacing & grind, Multiplayer, plus a **free-text custom aspect** (max 40 chars, e.g. "microtransactions", "Steam Deck", "couch co-op") — and the summary gains one block per selected aspect with its own sentiment and a note on what reviews actually say about it. If recent reviews don't meaningfully discuss an aspect, the model must mark it `not_mentioned` rather than invent. The custom text is sanitized and treated strictly as a topic, never as an instruction. The selection persists across games and is part of the cache key. This separates *what reviewers say* from *whether it matters to you* (one player's "repetitive" is another player's "relaxing").
 
 Later:
 

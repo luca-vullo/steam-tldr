@@ -253,5 +253,8 @@
   },
   "aspectMultiplayer": {
     "message": "Multijoueur"
+  },
+  "aspectCustomPlaceholder": {
+    "message": "Personnalisé…"
   }
 }

@@ -134,6 +134,28 @@ export async function saveFocusAspects(aspects: AspectId[]): Promise<void> {
   await chrome.storage.local.set({ focusAspects: sanitizeAspects(aspects) });
 }
 
+// Free-text custom aspect: it travels inside the prompt, so it gets a hard
+// length cap and control characters / newlines stripped.
+export const CUSTOM_ASPECT_MAX_CHARS = 40;
+
+export function sanitizeCustomAspect(input: unknown): string {
+  if (typeof input !== "string") return "";
+  return input
+    .replace(/[\r\n\t\0]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, CUSTOM_ASPECT_MAX_CHARS);
+}
+
+export async function loadCustomAspect(): Promise<string> {
+  const stored = await chrome.storage.local.get("customAspect");
+  return sanitizeCustomAspect(stored["customAspect"]);
+}
+
+export async function saveCustomAspect(text: string): Promise<void> {
+  await chrome.storage.local.set({ customAspect: sanitizeCustomAspect(text) });
+}
+
 // F8 — output/UI language
 export async function loadLanguage(): Promise<LanguageCode> {
   const stored = await chrome.storage.local.get("language");

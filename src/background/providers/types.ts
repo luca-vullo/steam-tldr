@@ -46,7 +46,7 @@ export const TLDR_JSON_SCHEMA = {
         properties: {
           id: {
             type: "string",
-            enum: ["performance", "story", "controls_ui", "pacing", "multiplayer"],
+            enum: ["performance", "story", "controls_ui", "pacing", "multiplayer", "custom"],
           },
           sentiment: {
             type: "string",
@@ -106,7 +106,7 @@ export function parseTLDRSummary(jsonText: string): TLDRSummary {
     parsed.recent_trend = null;
   }
   // aspects are best-effort too: drop malformed entries instead of failing
-  const validAspectIds = ["performance", "story", "controls_ui", "pacing", "multiplayer"];
+  const validAspectIds = ["performance", "story", "controls_ui", "pacing", "multiplayer", "custom"];
   const validAspectSentiments = ["positive", "mixed", "negative", "not_mentioned"];
   parsed.aspects = Array.isArray(parsed.aspects)
     ? parsed.aspects.filter(

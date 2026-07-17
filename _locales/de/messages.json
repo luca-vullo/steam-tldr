@@ -220,5 +220,20 @@
   },
   "optionsClearCacheDone": {
     "message": "Cache geleert: $1 Zusammenfassungen entfernt"
+  },
+  "optionsMinPlaytime": {
+    "message": "Mindest-Spielstunden des Rezensenten"
+  },
+  "tipMinPlaytime": {
+    "message": "Verwirft Rezensionen von Spielern unter dieser Stundenzahl (0 = aus). Filtert Meme-Rezensionen und Review-Bombing; mit Schwellen von 5-10 Stunden bleiben nur Rezensenten, die die echte Progression erlebt haben."
+  },
+  "trendBetter": {
+    "message": "Aktuelle Rezensionen sind besser als der historische Durchschnitt"
+  },
+  "trendSimilar": {
+    "message": "Aktuelle Rezensionen liegen im historischen Durchschnitt"
+  },
+  "trendWorse": {
+    "message": "Aktuelle Rezensionen sind schlechter als der historische Durchschnitt"
   }
 }

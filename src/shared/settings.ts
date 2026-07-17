@@ -12,6 +12,7 @@ export const DEFAULT_SELECTION_CONFIG: ReviewSelectionConfig = {
     freshness: 0.1,
   },
   minChars: 30,
+  minPlaytimeHours: 0, // off by default: opt-in anti-meme filter
 };
 
 // Stored values are untrusted (they may come from an imported preset file):
@@ -32,6 +33,7 @@ export function sanitizeSelectionConfig(input: unknown): ReviewSelectionConfig {
     numReviews: num(raw.numReviews, d.numReviews, 5, 200),
     dayRange: num(raw.dayRange, d.dayRange, 1, 365),
     minChars: num(raw.minChars, d.minChars, 0, 500),
+    minPlaytimeHours: num(raw.minPlaytimeHours, d.minPlaytimeHours, 0, 500),
     weights: {
       helpfulness: num(weights.helpfulness, d.weights.helpfulness, 0, 1),
       playtime: num(weights.playtime, d.weights.playtime, 0, 1),

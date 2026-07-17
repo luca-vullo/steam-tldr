@@ -35,12 +35,19 @@ export interface ReviewSelectionConfig {
   dayRange: number;
   weights: SelectionWeights;
   minChars: number;
+  // v0.3 — drop reviews from players below this many hours played
+  // (0 = disabled). Filters meme reviews and drive-by review bombing.
+  minPlaytimeHours: number;
 }
 
 // F3 — structured summary output
 export interface TLDRSummary {
   verdict: string; // one line
   sentiment: "positive" | "mixed" | "negative";
+  // v0.3 — recent reviews compared with the overall historical rating
+  // ("current state" verdict: patch broke the game / improved since launch);
+  // null when the model output is missing/invalid on this field
+  recent_trend: "better" | "similar" | "worse" | null;
   pros: string[]; // 3–5 recurring points
   cons: string[]; // 3–5 recurring points
   recent_changes: string | null; // notes about patches/updates if any emerge

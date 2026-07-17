@@ -17,6 +17,15 @@ const SENTIMENT_STYLE: Record<TLDRSummary["sentiment"], { labelKey: string; colo
   negative: { labelKey: "sentimentNegative", color: "#a34c25" },
 };
 
+const TREND_STYLE: Record<
+  Exclude<TLDRSummary["recent_trend"], null>,
+  { labelKey: string; color: string; arrow: string }
+> = {
+  better: { labelKey: "trendBetter", color: "#a4d007", arrow: "▲" },
+  similar: { labelKey: "trendSimilar", color: "#b9a074", arrow: "▶" },
+  worse: { labelKey: "trendWorse", color: "#cd5444", arrow: "▼" },
+};
+
 const CSS = `
 .stldr-tab {
   position: fixed;
@@ -128,6 +137,7 @@ const CSS = `
 
 .stldr-verdict { color: #fff; font-size: 16px; margin: 4px 0 10px; }
 .stldr-sentiment { font-weight: 700; }
+.stldr-trend { font-size: 12px; margin-top: 3px; }
 .stldr-col h4 {
   margin: 14px 0 4px;
   font-size: 11px;
@@ -285,6 +295,16 @@ export function createWidget(
     sentimentLabel.style.color = sentiment.color;
     sentimentLabel.textContent = t(sentiment.labelKey);
     sentimentEl.append(sentimentLabel);
+
+    // v0.3 — "current state": recent reviews vs the historical average
+    if (summary.recent_trend) {
+      const trend = TREND_STYLE[summary.recent_trend];
+      const trendEl = document.createElement("div");
+      trendEl.className = "stldr-trend";
+      trendEl.style.color = trend.color;
+      trendEl.textContent = `${trend.arrow} ${t(trend.labelKey)}`;
+      sentimentEl.append(trendEl);
+    }
 
     body.append(
       verdict,

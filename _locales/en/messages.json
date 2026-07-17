@@ -220,5 +220,20 @@
   },
   "optionsClearCacheDone": {
     "message": "Cache cleared: $1 summaries removed"
+  },
+  "optionsMinPlaytime": {
+    "message": "Reviewer's minimum hours played"
+  },
+  "tipMinPlaytime": {
+    "message": "Discard reviews from players below this many hours (0 = off). Filters meme reviews and drive-by review bombing; thresholds like 5-10 hours keep only reviewers who experienced the game's real progression."
+  },
+  "trendBetter": {
+    "message": "Recent reviews are better than the historical average"
+  },
+  "trendSimilar": {
+    "message": "Recent reviews are in line with the historical average"
+  },
+  "trendWorse": {
+    "message": "Recent reviews are worse than the historical average"
   }
 }

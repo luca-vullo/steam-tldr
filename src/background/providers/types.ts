@@ -22,6 +22,12 @@ export const TLDR_JSON_SCHEMA = {
       description: "One-line verdict, in the requested language",
     },
     sentiment: { type: "string", enum: ["positive", "mixed", "negative"] },
+    recent_trend: {
+      type: "string",
+      enum: ["better", "similar", "worse"],
+      description:
+        "Recent reviews compared with the overall historical rating provided in the input",
+    },
     pros: {
       type: "array",
       items: { type: "string" },
@@ -42,6 +48,7 @@ export const TLDR_JSON_SCHEMA = {
   required: [
     "verdict",
     "sentiment",
+    "recent_trend",
     "pros",
     "cons",
     "recent_changes",
@@ -67,6 +74,12 @@ export function parseTLDRSummary(jsonText: string): TLDRSummary {
     !Array.isArray(parsed.cons)
   ) {
     throw new Error("Model output does not match the TLDRSummary schema");
+  }
+  // recent_trend is best-effort: an invalid/missing value (e.g. from local
+  // models on the prompt-constraint fallback) hides the trend line instead
+  // of failing the whole summary
+  if (!["better", "similar", "worse"].includes(parsed.recent_trend as string)) {
+    parsed.recent_trend = null;
   }
   return parsed;
 }

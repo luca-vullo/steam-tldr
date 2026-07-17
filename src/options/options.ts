@@ -226,6 +226,7 @@ function readSelectionForm(): ReviewSelectionConfig {
     numReviews: Math.max(5, Math.min(200, num("numReviews", 50))),
     dayRange: Math.max(1, Math.min(365, num("dayRange", 30))),
     minChars: Math.max(0, Math.min(500, num("minChars", 30))),
+    minPlaytimeHours: Math.max(0, Math.min(500, num("minPlaytime", 0))),
     weights: {
       helpfulness: clamp01(num("wHelpfulness", 0.4)),
       playtime: clamp01(num("wPlaytime", 0.3)),
@@ -240,6 +241,7 @@ function writeSelectionForm(config: ReviewSelectionConfig): void {
   $<HTMLInputElement>("numReviews").value = String(config.numReviews);
   $<HTMLInputElement>("dayRange").value = String(config.dayRange);
   $<HTMLInputElement>("minChars").value = String(config.minChars);
+  $<HTMLInputElement>("minPlaytime").value = String(config.minPlaytimeHours);
   $<HTMLInputElement>("wHelpfulness").value = String(config.weights.helpfulness);
   $<HTMLInputElement>("wPlaytime").value = String(config.weights.playtime);
   $<HTMLInputElement>("wSubstance").value = String(config.weights.substance);

@@ -220,5 +220,20 @@
   },
   "optionsClearCacheDone": {
     "message": "Caché vaciada: $1 resúmenes eliminados"
+  },
+  "optionsMinPlaytime": {
+    "message": "Horas jugadas mínimas del autor"
+  },
+  "tipMinPlaytime": {
+    "message": "Descarta reseñas de jugadores con menos de estas horas (0 = desactivado). Filtra reseñas-meme y review bombing; con umbrales de 5-10 horas quedan solo autores que vivieron la progresión real del juego."
+  },
+  "trendBetter": {
+    "message": "Las reseñas recientes son mejores que la media histórica"
+  },
+  "trendSimilar": {
+    "message": "Las reseñas recientes están en línea con la media histórica"
+  },
+  "trendWorse": {
+    "message": "Las reseñas recientes son peores que la media histórica"
   }
 }

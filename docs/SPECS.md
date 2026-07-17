@@ -56,10 +56,10 @@ This is the most important design decision of the project.
 
 ### Post-MVP
 
-Planned for **v0.3** (driven by community feedback on what makes Steam reviews hard to use — meme reviews, review bombing, patches changing the picture):
+Shipped in **v0.3** (driven by community feedback on what makes Steam reviews hard to use — meme reviews, review bombing, patches changing the picture):
 
-- **Minimum playtime filter**: optionally ignore (or down-weight) reviews below a configurable hours-played threshold, so the summary reflects players who experienced the real progression, not one-line memes. The selection engine already carries per-review playtime.
-- **"Current state" trend verdict**: an explicit recent-vs-overall comparison in the summary ("recent reviews diverge from the historical score: a patch broke performance" / "radically improved since launch"). The historical score and the recent sample are already both sent to the model; this adds a dedicated `trend` field.
+- **Minimum playtime filter**: optionally ignore reviews below a configurable hours-played threshold (`minPlaytimeHours`, default off), so the summary reflects players who experienced the real progression, not one-line memes.
+- **"Current state" trend verdict**: an explicit recent-vs-overall comparison in the summary (`recent_trend`: better/similar/worse than the historical average), rendered as a colored trend line under the sentiment — catches both "a patch broke it" and "radically improved since launch".
 
 Planned for **v0.4**:
 

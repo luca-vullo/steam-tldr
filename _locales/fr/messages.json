@@ -220,5 +220,20 @@
   },
   "optionsClearCacheDone": {
     "message": "Cache vidé : $1 résumés supprimés"
+  },
+  "optionsMinPlaytime": {
+    "message": "Heures de jeu minimales de l'auteur"
+  },
+  "tipMinPlaytime": {
+    "message": "Écarte les avis des joueurs en dessous de ce nombre d'heures (0 = désactivé). Filtre les avis-mèmes et le review bombing ; avec des seuils de 5-10 heures, il ne reste que les auteurs ayant vécu la vraie progression du jeu."
+  },
+  "trendBetter": {
+    "message": "Les avis récents sont meilleurs que la moyenne historique"
+  },
+  "trendSimilar": {
+    "message": "Les avis récents sont dans la lignée de la moyenne historique"
+  },
+  "trendWorse": {
+    "message": "Les avis récents sont moins bons que la moyenne historique"
   }
 }

@@ -14,6 +14,15 @@ export interface SelectionResult {
 // Threshold below which steam_native falls back to filter=recent
 const NATIVE_FALLBACK_MIN = 10;
 
+// Pre-scoring filters: minimum text length (contentless "+1" reviews) and,
+// when enabled, minimum hours played (meme reviews / drive-by bombing).
+function passesFilters(r: SteamReview, config: ReviewSelectionConfig): boolean {
+  return (
+    r.text.length >= config.minChars &&
+    r.playtimeForeverMin >= config.minPlaytimeHours * 60
+  );
+}
+
 export async function collectReviews(
   appid: string,
   config: ReviewSelectionConfig,
@@ -25,7 +34,7 @@ export async function collectReviews(
         fetchSteamReviews(appid, { filter: "recent" }),
       ]);
       const pool = dedupe([...helpful.reviews, ...recent.reviews]).filter(
-        (r) => r.text.length >= config.minChars,
+        (r) => passesFilters(r, config),
       );
       return {
         selected: selectScored(pool, config),
@@ -37,7 +46,7 @@ export async function collectReviews(
       const { reviews, querySummary } = await fetchSteamReviews(appid, {
         filter: "recent",
       });
-      const pool = reviews.filter((r) => r.text.length >= config.minChars);
+      const pool = reviews.filter((r) => passesFilters(r, config));
       return { selected: selectScored(pool, config), querySummary, poolSize: pool.length };
     }
     case "steam_native": {
@@ -50,7 +59,7 @@ export async function collectReviews(
           filter: "recent",
         }));
       }
-      const pool = reviews.filter((r) => r.text.length >= config.minChars);
+      const pool = reviews.filter((r) => passesFilters(r, config));
       // Steam's own ordering, no client-side scoring
       return {
         selected: pool.slice(0, config.numReviews),

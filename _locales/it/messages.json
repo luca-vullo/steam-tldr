@@ -220,5 +220,20 @@
   },
   "optionsClearCacheDone": {
     "message": "Cache svuotata: $1 riassunti rimossi"
+  },
+  "optionsMinPlaytime": {
+    "message": "Ore di gioco minime del recensore"
+  },
+  "tipMinPlaytime": {
+    "message": "Scarta le recensioni di chi ha giocato meno di queste ore (0 = disattivo). Filtra recensioni-meme e review bombing di chi non ha davvero giocato; con soglie tipo 5-10 ore restano solo recensori che hanno visto la vera progressione del gioco."
+  },
+  "trendBetter": {
+    "message": "Le recensioni recenti sono migliori della media storica"
+  },
+  "trendSimilar": {
+    "message": "Le recensioni recenti sono in linea con la media storica"
+  },
+  "trendWorse": {
+    "message": "Le recensioni recenti sono peggiori della media storica"
   }
 }

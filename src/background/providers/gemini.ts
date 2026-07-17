@@ -12,8 +12,10 @@ export const geminiProvider: LLMProvider = {
     const url = `${baseUrl}/models/${profile.model}:generateContent`;
 
     // Gemini's schema dialect doesn't accept anyOf/additionalProperties:
-    // variant with recent_changes as a plain string (empty = no notes).
-    const schema = {
+    // variant with recent_changes as a plain string (empty = no notes) and
+    // additionalProperties stripped recursively (it also appears nested in
+    // the aspects items).
+    const schema = stripAdditionalProperties({
       type: "object",
       properties: {
         ...Object.fromEntries(
@@ -25,7 +27,7 @@ export const geminiProvider: LLMProvider = {
         ),
       },
       required: TLDR_JSON_SCHEMA.required,
-    };
+    });
 
     const response = await fetch(url, {
       method: "POST",
@@ -62,3 +64,16 @@ export const geminiProvider: LLMProvider = {
     return summary;
   },
 };
+
+function stripAdditionalProperties(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(stripAdditionalProperties);
+  if (node && typeof node === "object") {
+    const out: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(node)) {
+      if (key === "additionalProperties") continue;
+      out[key] = stripAdditionalProperties(value);
+    }
+    return out;
+  }
+  return node;
+}

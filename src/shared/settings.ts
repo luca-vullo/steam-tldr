@@ -1,4 +1,4 @@
-import type { ProviderProfile, ReviewSelectionConfig } from "./types";
+import { ALL_ASPECTS, type AspectId, type ProviderProfile, type ReviewSelectionConfig } from "./types";
 import { isSupportedLanguage, resolveDefaultLanguage, type LanguageCode } from "./i18n";
 
 export const DEFAULT_SELECTION_CONFIG: ReviewSelectionConfig = {
@@ -117,6 +117,21 @@ export async function loadPresets(): Promise<PresetMap> {
 
 export async function savePresets(presets: PresetMap): Promise<void> {
   await chrome.storage.local.set({ selectionPresets: presets });
+}
+
+// v0.4 — persisted focus aspects (chosen via the widget's chips)
+export function sanitizeAspects(input: unknown): AspectId[] {
+  if (!Array.isArray(input)) return [];
+  return ALL_ASPECTS.filter((a) => input.includes(a));
+}
+
+export async function loadFocusAspects(): Promise<AspectId[]> {
+  const stored = await chrome.storage.local.get("focusAspects");
+  return sanitizeAspects(stored["focusAspects"]);
+}
+
+export async function saveFocusAspects(aspects: AspectId[]): Promise<void> {
+  await chrome.storage.local.set({ focusAspects: sanitizeAspects(aspects) });
 }
 
 // F8 — output/UI language

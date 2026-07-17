@@ -2,7 +2,8 @@
 // right edge opens a side drawer. No dependency on the page markup
 // (resilience requirement). Vanilla TS, .stldr- prefixed classes; the
 // summary is ALWAYS rendered as text (never innerHTML from generated content).
-import type { Message, TLDRSummary } from "../shared/types";
+import { ALL_ASPECTS, type AspectId, type AspectSummary, type Message, type TLDRSummary } from "../shared/types";
+import { saveFocusAspects } from "../shared/settings";
 import { t } from "../shared/i18n";
 
 function openOptions(): void {
@@ -24,6 +25,21 @@ const TREND_STYLE: Record<
   better: { labelKey: "trendBetter", color: "#a4d007", arrow: "▲" },
   similar: { labelKey: "trendSimilar", color: "#b9a074", arrow: "▶" },
   worse: { labelKey: "trendWorse", color: "#cd5444", arrow: "▼" },
+};
+
+const ASPECT_LABEL_KEYS: Record<AspectId, string> = {
+  performance: "aspectPerformance",
+  story: "aspectStory",
+  controls_ui: "aspectControls",
+  pacing: "aspectPacing",
+  multiplayer: "aspectMultiplayer",
+};
+
+const ASPECT_SENTIMENT_COLORS: Record<AspectSummary["sentiment"], string> = {
+  positive: "#a4d007",
+  mixed: "#b9a074",
+  negative: "#cd5444",
+  not_mentioned: "#8f98a0",
 };
 
 const CSS = `
@@ -97,7 +113,36 @@ const CSS = `
 }
 .stldr-close:hover, .stldr-gear:hover { color: #fff; }
 .stldr-actions { display: flex; align-items: center; gap: 2px; }
-.stldr-game { color: #8f98a0; font-size: 12px; margin: 0 0 12px; }
+.stldr-game { color: #8f98a0; font-size: 12px; margin: 0 0 8px; }
+
+.stldr-chips-title { color: #8f98a0; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 4px; }
+.stldr-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+.stldr-chip {
+  border: 1px solid rgba(103, 193, 245, 0.35);
+  border-radius: 2px;
+  background: rgba(103, 193, 245, 0.08);
+  color: #8f98a0;
+  font-size: 11px;
+  padding: 3px 9px;
+  cursor: pointer;
+}
+.stldr-chip:hover { color: #fff; }
+.stldr-chip.stldr-chip-on {
+  background: rgba(103, 193, 245, 0.35);
+  color: #fff;
+  border-color: #66c0f4;
+}
+
+.stldr-aspects { margin-top: 14px; }
+.stldr-aspect { margin-bottom: 7px; font-size: 12.5px; }
+.stldr-aspect b { font-weight: 700; }
+.stldr-aspect-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: middle;
+}
 
 .stldr-generate {
   display: inline-block;
@@ -186,10 +231,12 @@ export interface TLDRWidget {
   setResult(summary: TLDRSummary, reviewsUsed: number, createdAt: number): void;
   setError(message: string, missingKey: boolean): void;
   open(): void;
+  getAspects(): AspectId[];
 }
 
 export function createWidget(
   gameName: string,
+  initialAspects: AspectId[],
   onGenerate: (force?: boolean) => void,
 ): TLDRWidget {
   const style = document.createElement("style");
@@ -232,9 +279,30 @@ export function createWidget(
   game.className = "stldr-game";
   game.textContent = gameName;
 
+  // v0.4 — focus aspect chips ("filter for my playstyle"), always visible:
+  // toggle what you care about, then Generate/Regenerate. Persisted globally.
+  const selectedAspects = new Set<AspectId>(initialAspects);
+  const chipsTitle = document.createElement("p");
+  chipsTitle.className = "stldr-chips-title";
+  chipsTitle.textContent = t("aspectsFocusTitle");
+  const chips = document.createElement("div");
+  chips.className = "stldr-chips";
+  for (const aspect of ALL_ASPECTS) {
+    const chip = document.createElement("button");
+    chip.className = "stldr-chip" + (selectedAspects.has(aspect) ? " stldr-chip-on" : "");
+    chip.textContent = t(ASPECT_LABEL_KEYS[aspect]);
+    chip.addEventListener("click", () => {
+      if (selectedAspects.has(aspect)) selectedAspects.delete(aspect);
+      else selectedAspects.add(aspect);
+      chip.classList.toggle("stldr-chip-on");
+      void saveFocusAspects([...selectedAspects]);
+    });
+    chips.append(chip);
+  }
+
   const body = document.createElement("div");
 
-  drawer.append(header, game, body);
+  drawer.append(header, game, chipsTitle, chips, body);
   document.body.append(style, tab, drawer);
 
   tab.addEventListener("click", () => drawer.classList.toggle("stldr-open"));
@@ -313,6 +381,27 @@ export function createWidget(
       buildList("stldr-cons", t("panelCons"), summary.cons),
     );
 
+    // v0.4 — one block per requested aspect, in chip order
+    if (summary.aspects.length > 0) {
+      const aspectsEl = document.createElement("div");
+      aspectsEl.className = "stldr-aspects";
+      const byId = new Map(summary.aspects.map((a) => [a.id, a]));
+      for (const id of ALL_ASPECTS) {
+        const aspect = byId.get(id);
+        if (!aspect) continue;
+        const row = document.createElement("div");
+        row.className = "stldr-aspect";
+        const dot = document.createElement("span");
+        dot.className = "stldr-aspect-dot";
+        dot.style.background = ASPECT_SENTIMENT_COLORS[aspect.sentiment];
+        const label = document.createElement("b");
+        label.textContent = t(ASPECT_LABEL_KEYS[id]) + ": ";
+        row.append(dot, label, document.createTextNode(aspect.note));
+        aspectsEl.append(row);
+      }
+      body.append(aspectsEl);
+    }
+
     if (summary.recent_changes) {
       const changes = document.createElement("div");
       changes.className = "stldr-changes";
@@ -351,7 +440,11 @@ export function createWidget(
     }
   }
 
-  return { setIdle, setLoading, setResult, setError, open };
+  function getAspects(): AspectId[] {
+    return ALL_ASPECTS.filter((a) => selectedAspects.has(a));
+  }
+
+  return { setIdle, setLoading, setResult, setError, open, getAspects };
 }
 
 function buildList(className: string, heading: string, items: string[]): HTMLElement {

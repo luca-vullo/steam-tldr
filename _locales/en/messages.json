@@ -235,5 +235,23 @@
   },
   "trendWorse": {
     "message": "Recent reviews are worse than the historical average"
+  },
+  "aspectsFocusTitle": {
+    "message": "What you care about"
+  },
+  "aspectPerformance": {
+    "message": "Performance"
+  },
+  "aspectStory": {
+    "message": "Story"
+  },
+  "aspectControls": {
+    "message": "Controls & UI"
+  },
+  "aspectPacing": {
+    "message": "Pacing & grind"
+  },
+  "aspectMultiplayer": {
+    "message": "Multiplayer"
   }
 }

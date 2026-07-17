@@ -1,10 +1,11 @@
-import type { Message, MessageResponse } from "../shared/types";
+import type { AspectId, Message, MessageResponse } from "../shared/types";
 import {
   activeProfile,
   loadCacheTtlHours,
   loadLanguage,
   loadProviderSettings,
   loadSelectionConfig,
+  sanitizeAspects,
 } from "../shared/settings";
 import { collectReviews } from "./selection";
 import { summarizeReviews } from "./summarizer";
@@ -26,7 +27,12 @@ chrome.runtime.onMessage.addListener(
         return true; // async response
 
       case "summarize":
-        handleSummarize(message.appid, message.gameName, message.force === true)
+        handleSummarize(
+          message.appid,
+          message.gameName,
+          message.force === true,
+          sanitizeAspects(message.aspects),
+        )
           .then(sendResponse)
           .catch((err: unknown) =>
             sendResponse({ type: "error", code: "generic", message: String(err) }),
@@ -50,14 +56,24 @@ async function handleSummarize(
   appid: string,
   gameName: string,
   force: boolean,
+  aspects: AspectId[],
 ): Promise<MessageResponse> {
   const providerSettings = await loadProviderSettings();
   const profile = activeProfile(providerSettings);
   const selectionConfig = await loadSelectionConfig();
   const language = await loadLanguage();
 
-  // F6 — cache first ("Regenerate" bypasses it with force)
-  const key = cacheKey(appid, language, profile.id, profile.model, selectionHash(selectionConfig));
+  // F6 — cache first ("Regenerate" bypasses it with force); the requested
+  // aspects are part of the key so toggling chips regenerates
+  const aspectsKey = aspects.length > 0 ? [...aspects].sort().join("+") : "none";
+  const key = cacheKey(
+    appid,
+    language,
+    profile.id,
+    profile.model,
+    selectionHash(selectionConfig),
+    aspectsKey,
+  );
   const ttlHours = await loadCacheTtlHours();
   if (!force) {
     const cached = await getCached(key, ttlHours);
@@ -92,6 +108,7 @@ async function handleSummarize(
     querySummary,
     reviews: selected,
     language,
+    aspects,
   });
 
   const createdAt = Date.now();

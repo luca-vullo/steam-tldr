@@ -40,6 +40,26 @@ export interface ReviewSelectionConfig {
   minPlaytimeHours: number;
 }
 
+// v0.4 — aspect-focused summaries ("filter for my playstyle").
+// Fixed aspect list: keeps the schema, the cache key and the i18n manageable.
+export type AspectId = "performance" | "story" | "controls_ui" | "pacing" | "multiplayer";
+
+export const ALL_ASPECTS: AspectId[] = [
+  "performance",
+  "story",
+  "controls_ui",
+  "pacing",
+  "multiplayer",
+];
+
+export interface AspectSummary {
+  id: AspectId;
+  // "not_mentioned" is the anti-hallucination valve: if recent reviews don't
+  // meaningfully discuss the aspect, the model must say so, not invent.
+  sentiment: "positive" | "mixed" | "negative" | "not_mentioned";
+  note: string; // 1-2 sentences on what reviews say about this aspect
+}
+
 // F3 — structured summary output
 export interface TLDRSummary {
   verdict: string; // one line
@@ -50,6 +70,8 @@ export interface TLDRSummary {
   recent_trend: "better" | "similar" | "worse" | null;
   pros: string[]; // 3–5 recurring points
   cons: string[]; // 3–5 recurring points
+  // v0.4 — one entry per requested focus aspect (empty when none requested)
+  aspects: AspectSummary[];
   recent_changes: string | null; // notes about patches/updates if any emerge
   reviews_analyzed: number;
   language: string;
@@ -75,7 +97,13 @@ export interface ProviderProfile {
 export type Message =
   | { type: "ping"; appid: string }
   | { type: "fetchReviews"; appid: string }
-  | { type: "summarize"; appid: string; gameName: string; force?: boolean }
+  | {
+      type: "summarize";
+      appid: string;
+      gameName: string;
+      force?: boolean;
+      aspects?: AspectId[]; // v0.4 — requested focus aspects
+    }
   // chrome-extension:// pages can't be navigated to from a web page
   // (ERR_BLOCKED_BY_CLIENT), so the widget asks the service worker to open
   // the options via chrome.runtime.openOptionsPage()

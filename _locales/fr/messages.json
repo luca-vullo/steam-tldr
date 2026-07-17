@@ -235,5 +235,23 @@
   },
   "trendWorse": {
     "message": "Les avis récents sont moins bons que la moyenne historique"
+  },
+  "aspectsFocusTitle": {
+    "message": "Ce qui compte pour vous"
+  },
+  "aspectPerformance": {
+    "message": "Performances"
+  },
+  "aspectStory": {
+    "message": "Histoire"
+  },
+  "aspectControls": {
+    "message": "Contrôles et interface"
+  },
+  "aspectPacing": {
+    "message": "Rythme et grind"
+  },
+  "aspectMultiplayer": {
+    "message": "Multijoueur"
   }
 }

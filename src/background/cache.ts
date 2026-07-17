@@ -47,8 +47,9 @@ export function cacheKey(
   profileId: string,
   model: string,
   selHash: string,
+  aspectsKey: string, // sorted aspect ids joined with "+", or "none"
 ): string {
-  return `${PREFIX}${appid}:${lang}:${profileId}:${model}:${selHash}`;
+  return `${PREFIX}${appid}:${lang}:${profileId}:${model}:${selHash}:${aspectsKey}`;
 }
 
 export async function getCached(key: string, ttlHours: number): Promise<CachedSummary | null> {

@@ -61,9 +61,9 @@ Shipped in **v0.3** (driven by community feedback on what makes Steam reviews ha
 - **Minimum playtime filter**: optionally ignore reviews below a configurable hours-played threshold (`minPlaytimeHours`, default off), so the summary reflects players who experienced the real progression, not one-line memes.
 - **"Current state" trend verdict**: an explicit recent-vs-overall comparison in the summary (`recent_trend`: better/similar/worse than the historical average), rendered as a colored trend line under the sentiment — catches both "a patch broke it" and "radically improved since launch".
 
-Planned for **v0.4**:
+Shipped in **v0.4**:
 
-- **Aspect-focused summaries ("filter for my playstyle")**: user-selectable focus tags — performance, story, UI & menus, controls & game feel, pacing/grind — so the summary separates *what reviewers say* from *whether it matters to you* (one player's "repetitive" is another player's "relaxing"). Includes targeted extraction of UI/controls/pacing comments, which store pages tend to hide.
+- **Aspect-focused summaries ("filter for my playstyle")**: toggle chips in the widget — Performance, Story, Controls & UI, Pacing & grind, Multiplayer — and the summary gains one block per selected aspect with its own sentiment and a note on what reviews actually say about it. If recent reviews don't meaningfully discuss an aspect, the model must mark it `not_mentioned` rather than invent. The selection persists across games and is part of the cache key. This separates *what reviewers say* from *whether it matters to you* (one player's "repetitive" is another player's "relaxing").
 
 Later:
 

@@ -38,6 +38,29 @@ export const TLDR_JSON_SCHEMA = {
       items: { type: "string" },
       description: "3-5 recurring complaints",
     },
+    aspects: {
+      type: "array",
+      description: "One entry per requested focus aspect; empty if none requested",
+      items: {
+        type: "object",
+        properties: {
+          id: {
+            type: "string",
+            enum: ["performance", "story", "controls_ui", "pacing", "multiplayer"],
+          },
+          sentiment: {
+            type: "string",
+            enum: ["positive", "mixed", "negative", "not_mentioned"],
+          },
+          note: {
+            type: "string",
+            description: "1-2 sentences on what reviews say about this aspect",
+          },
+        },
+        required: ["id", "sentiment", "note"],
+        additionalProperties: false,
+      },
+    },
     recent_changes: {
       anyOf: [{ type: "string" }, { type: "null" }],
       description: "Notes about recent patches/updates if any emerge, otherwise null",
@@ -51,6 +74,7 @@ export const TLDR_JSON_SCHEMA = {
     "recent_trend",
     "pros",
     "cons",
+    "aspects",
     "recent_changes",
     "reviews_analyzed",
     "language",
@@ -81,6 +105,18 @@ export function parseTLDRSummary(jsonText: string): TLDRSummary {
   if (!["better", "similar", "worse"].includes(parsed.recent_trend as string)) {
     parsed.recent_trend = null;
   }
+  // aspects are best-effort too: drop malformed entries instead of failing
+  const validAspectIds = ["performance", "story", "controls_ui", "pacing", "multiplayer"];
+  const validAspectSentiments = ["positive", "mixed", "negative", "not_mentioned"];
+  parsed.aspects = Array.isArray(parsed.aspects)
+    ? parsed.aspects.filter(
+        (a) =>
+          a &&
+          validAspectIds.includes(a.id) &&
+          validAspectSentiments.includes(a.sentiment) &&
+          typeof a.note === "string",
+      )
+    : [];
   return parsed;
 }
 

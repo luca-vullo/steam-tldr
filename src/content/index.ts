@@ -1,6 +1,6 @@
 import type { Message, MessageResponse } from "../shared/types";
 import { initI18n } from "../shared/i18n";
-import { loadLanguage } from "../shared/settings";
+import { loadFocusAspects, loadLanguage } from "../shared/settings";
 import { createWidget } from "./panel";
 
 // F1 — extracts the appid from store.steampowered.com/app/{appid}/...
@@ -44,7 +44,7 @@ async function initPage(appid: string): Promise<void> {
 
   // F4 — widget independent from the page layout: fixed tab on the right
   // edge + drawer. No Steam markup selectors.
-  const widget = createWidget(gameName, generate);
+  const widget = createWidget(gameName, await loadFocusAspects(), generate);
   widget.setIdle();
   console.log("[steam-tldr] widget ready (tab on the right edge)");
 
@@ -55,7 +55,7 @@ async function initPage(appid: string): Promise<void> {
   function generate(force = false): void {
     widget.open();
     widget.setLoading();
-    send({ type: "summarize", appid, gameName, force }, (response) => {
+    send({ type: "summarize", appid, gameName, force, aspects: widget.getAspects() }, (response) => {
       if (response.type === "summary") {
         widget.setResult(response.summary, response.reviewsUsed, response.createdAt);
         return;

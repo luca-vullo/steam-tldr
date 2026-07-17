@@ -7,6 +7,7 @@ export default defineManifest({
   description: "__MSG_extDescription__",
   version: pkg.version,
   default_locale: "en",
+  homepage_url: "https://github.com/luca-vullo/steam-tldr",
   icons: {
     16: "icons/icon16.png",
     32: "icons/icon32.png",

@@ -54,11 +54,20 @@ This is the most important design decision of the project.
   Implementation note: `chrome.i18n.getMessage` always follows the *browser* locale, so the UI uses a runtime translation layer fed by the same `_locales` files. The language selector's own label is deliberately kept in English, so the row stays findable even if the UI ends up in the wrong language.
 - **F9 — Configuration presets**: the review selection settings (F2) — mode, count, date range, weights — can be saved as named presets and reloaded from the options page, with JSON export/import to share them across installations. A built-in "Default" preset restores the recommended values.
 
-### Post-MVP (v0.2+)
+### Post-MVP
+
+Planned for **v0.3** (driven by community feedback on what makes Steam reviews hard to use — meme reviews, review bombing, patches changing the picture):
+
+- **Minimum playtime filter**: optionally ignore (or down-weight) reviews below a configurable hours-played threshold, so the summary reflects players who experienced the real progression, not one-line memes. The selection engine already carries per-review playtime.
+- **"Current state" trend verdict**: an explicit recent-vs-overall comparison in the summary ("recent reviews diverge from the historical score: a patch broke performance" / "radically improved since launch"). The historical score and the recent sample are already both sent to the model; this adds a dedicated `trend` field.
+
+Planned for **v0.4**:
+
+- **Aspect-focused summaries ("filter for my playstyle")**: user-selectable focus tags — performance, story, UI & menus, controls & game feel, pacing/grind — so the summary separates *what reviewers say* from *whether it matters to you* (one player's "repetitive" is another player's "relaxing"). Includes targeted extraction of UI/controls/pacing comments, which store pages tend to hide.
+
+Later:
 
 - Review pool pagination via `cursor` (currently max 100 per fetch), for larger starting samples.
-- "Recent vs. overall" comparison (do recent reviews diverge from the historical score? e.g. review bombing, or a game improved by a patch).
-- On-demand summary of a specific aspect ("what do they say about performance?").
 - Firefox support (WebExtensions).
 - Sentiment badges on search/wishlist pages.
 

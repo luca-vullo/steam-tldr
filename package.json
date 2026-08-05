@@ -11,12 +11,12 @@
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "^2.2.0",
-    "@types/chrome": "^0.2.2",
+    "@types/chrome": "^0.2.5",
     "typescript": "^7.0.2",
     "vite": "^6.4.3"
   },
   "dependencies": {
     "@anthropic-ai/foundry-sdk": "^0.4.0",
-    "@anthropic-ai/sdk": "^0.111.0"
+    "@anthropic-ai/sdk": "^0.115.0"
   }
 }

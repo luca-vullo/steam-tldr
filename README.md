@@ -4,6 +4,8 @@
 
 # Steam TL;DR — AI Steam Review Summarizer
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/mokdidbnndooghbajfnljladeifllmdg?label=Chrome%20Web%20Store&color=66c0f4)](https://chromewebstore.google.com/detail/mokdidbnndooghbajfnljladeifllmdg)
+[![Chrome Web Store users](https://img.shields.io/chrome-web-store/users/mokdidbnndooghbajfnljladeifllmdg)](https://chromewebstore.google.com/detail/mokdidbnndooghbajfnljladeifllmdg)
 [![CI](https://github.com/luca-vullo/steam-tldr/actions/workflows/ci.yml/badge.svg)](https://github.com/luca-vullo/steam-tldr/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/luca-vullo/steam-tldr)](https://github.com/luca-vullo/steam-tldr/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -46,6 +48,12 @@ Bring your own AI: the extension works with **your own API key** on the provider
 - **Privacy by design**: your API keys live only in `chrome.storage.local` and are sent only to the endpoint of their own profile; review texts are the only data sent to the AI provider; no telemetry, no server of ours
 
 ## Install
+
+### From the Chrome Web Store (recommended)
+
+**[Install Steam TL;DR](https://chromewebstore.google.com/detail/mokdidbnndooghbajfnljladeifllmdg)** — one click, auto-updates.
+
+Then open the extension's **Options**, create a provider profile with your API key (or a local model), and visit any Steam game page.
 
 ### From a release (no build tools needed)
 

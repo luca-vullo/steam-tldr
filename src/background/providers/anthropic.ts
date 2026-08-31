@@ -50,7 +50,22 @@ export const anthropicProvider: LLMProvider = {
 };
 
 // The SDK appends "v1/messages" to the baseURL on its own: if the user pastes
-// the full endpoint URL, the suffix must be stripped (otherwise 404).
+// the full endpoint URL, the suffix must be stripped (otherwise 404). Azure
+// resources serve the Anthropic API under /anthropic, so a bare resource URL
+// gets the prefix added automatically (mirrors the /openai/v1 handling in the
+// OpenAI-compatible adapter).
 function normalizeBaseUrl(baseUrl: string): string {
-  return baseUrl.replace(/\/(v1\/)?(messages)?\/?$/, "") + "/";
+  const base = baseUrl.replace(/\/(v1\/)?(messages)?\/?$/, "");
+  try {
+    const url = new URL(base);
+    const isAzure = /\.(openai\.azure\.com|services\.ai\.azure\.com|cognitiveservices\.azure\.com)$/.test(
+      url.hostname,
+    );
+    if (isAzure && !url.pathname.includes("/anthropic")) {
+      return url.origin + "/anthropic/";
+    }
+  } catch {
+    // not a valid URL: let the SDK fail with a clear error
+  }
+  return base + "/";
 }

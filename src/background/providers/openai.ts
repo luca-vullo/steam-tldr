@@ -45,9 +45,10 @@ export const openAICompatProvider: LLMProvider = {
       body: JSON.stringify(body),
     });
 
-    // Some compatible endpoints don't support response_format json_schema:
-    // retry once with the constraint moved into the prompt.
-    if (response.status === 400) {
+    // Some compatible endpoints don't support response_format json_schema
+    // (and Azure surfaces that as a 500 on some models): retry once with the
+    // constraint moved into the prompt.
+    if (response.status === 400 || response.status >= 500) {
       const fallbackBody = {
         model: profile.model,
         messages: [

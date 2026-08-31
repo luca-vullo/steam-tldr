@@ -37,7 +37,7 @@ chrome.runtime.onMessage.addListener(
         )
           .then(sendResponse)
           .catch((err: unknown) =>
-            sendResponse({ type: "error", code: "generic", message: String(err) }),
+            sendResponse({ type: "error", code: errorCode(err), message: String(err) }),
           );
         return true;
 
@@ -47,6 +47,12 @@ chrome.runtime.onMessage.addListener(
     }
   },
 );
+
+// Providers throw plain Errors with the HTTP status in the text; a 429 is
+// worth telling apart so the widget can say "try later" instead of "broken".
+function errorCode(err: unknown): "rate_limited" | "generic" {
+  return /HTTP 429/.test(String(err)) ? "rate_limited" : "generic";
+}
 
 async function handleFetchReviews(appid: string): Promise<MessageResponse> {
   const config = await loadSelectionConfig();

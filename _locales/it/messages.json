@@ -119,6 +119,9 @@
   "panelGenericError": {
     "message": "Riassunto non disponibile. Riprova tra qualche istante."
   },
+  "panelRateLimited": {
+    "message": "Il provider AI è sovraccarico o ti sta limitando (HTTP 429). Attendi un po' e riprova."
+  },
   "sentimentPositive": {
     "message": "Complessivamente positive"
   },

@@ -119,6 +119,9 @@
   "panelGenericError": {
     "message": "Summary unavailable. Try again in a moment."
   },
+  "panelRateLimited": {
+    "message": "Your AI provider is overloaded or rate-limiting you (HTTP 429). Wait a bit and try again."
+  },
   "sentimentPositive": {
     "message": "Overall positive"
   },

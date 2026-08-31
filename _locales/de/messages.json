@@ -119,6 +119,9 @@
   "panelGenericError": {
     "message": "Zusammenfassung nicht verfügbar. Versuche es gleich noch einmal."
   },
+  "panelRateLimited": {
+    "message": "Dein KI-Anbieter ist überlastet oder drosselt dich (HTTP 429). Warte kurz und versuche es erneut."
+  },
   "sentimentPositive": {
     "message": "Insgesamt positiv"
   },

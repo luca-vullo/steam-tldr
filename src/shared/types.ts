@@ -128,4 +128,4 @@ export type MessageResponse =
       fromCache: boolean;
       createdAt: number; // generation time, epoch ms
     }
-  | { type: "error"; code: "missing_api_key" | "generic"; message: string };
+  | { type: "error"; code: "missing_api_key" | "rate_limited" | "generic"; message: string };

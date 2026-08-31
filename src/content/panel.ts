@@ -251,7 +251,7 @@ export interface TLDRWidget {
   setIdle(): void;
   setLoading(): void;
   setResult(summary: TLDRSummary, reviewsUsed: number, createdAt: number): void;
-  setError(message: string, missingKey: boolean): void;
+  setError(message: string, code: "missing_api_key" | "rate_limited" | "generic"): void;
   open(): void;
   getAspects(): AspectId[];
   getCustomAspect(): string;
@@ -465,11 +465,16 @@ export function createWidget(
     addRegenerate();
   }
 
-  function setError(message: string, missingKey: boolean): void {
+  function setError(message: string, code: "missing_api_key" | "rate_limited" | "generic"): void {
     clear();
+    const missingKey = code === "missing_api_key";
     const error = document.createElement("div");
     error.className = "stldr-error";
-    error.textContent = missingKey ? t("panelMissingKey") : t("panelGenericError");
+    error.textContent = missingKey
+      ? t("panelMissingKey")
+      : code === "rate_limited"
+        ? t("panelRateLimited")
+        : t("panelGenericError");
     body.append(error);
 
     if (missingKey) {

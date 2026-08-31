@@ -75,7 +75,7 @@ async function initPage(appid: string): Promise<void> {
         return;
       }
       if (response.type === "error") {
-        widget.setError(response.message, response.code === "missing_api_key");
+        widget.setError(response.message, response.code);
         return;
       }
     });

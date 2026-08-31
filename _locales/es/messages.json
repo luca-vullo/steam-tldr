@@ -119,6 +119,9 @@
   "panelGenericError": {
     "message": "Resumen no disponible. Inténtalo de nuevo en un momento."
   },
+  "panelRateLimited": {
+    "message": "Tu proveedor de IA está sobrecargado o te está limitando (HTTP 429). Espera un poco y vuelve a intentarlo."
+  },
   "sentimentPositive": {
     "message": "En general positivas"
   },

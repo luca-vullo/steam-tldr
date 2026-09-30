@@ -10,13 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@crxjs/vite-plugin": "^2.2.0",
-    "@types/chrome": "^0.2.7",
+    "@crxjs/vite-plugin": "^3.0.0",
+    "@types/chrome": "^0.3.0",
     "typescript": "^7.0.2",
     "vite": "^6.4.3"
   },
   "dependencies": {
-    "@anthropic-ai/foundry-sdk": "^0.4.4",
-    "@anthropic-ai/sdk": "^0.120.0"
+    "@anthropic-ai/foundry-sdk": "^0.4.9",
+    "@anthropic-ai/sdk": "^0.128.0"
   }
 }

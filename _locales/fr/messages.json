@@ -3,7 +3,7 @@
     "message": "Steam TL;DR"
   },
   "extDescription": {
-    "message": "Résumé par IA des avis récents d'un jeu, directement sur sa page du magasin Steam."
+    "message": "Résumés IA des avis Steam récents d'un jeu, directement sur sa page. Démarrez gratuitement avec une clé Gemini."
   },
   "optionsProfilesSection": {
     "message": "Profils de fournisseur d'IA"

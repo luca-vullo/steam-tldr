@@ -3,7 +3,7 @@
     "message": "Steam TL;DR"
   },
   "extDescription": {
-    "message": "AI summary of a game's recent Steam reviews, shown directly on its store page."
+    "message": "AI summaries of a game's recent Steam reviews, right on its store page. Start free with a Gemini key."
   },
   "optionsProfilesSection": {
     "message": "AI provider profiles"

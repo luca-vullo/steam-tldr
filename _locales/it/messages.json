@@ -41,6 +41,12 @@
   "optionsApiKeyHint": {
     "message": "La tua chiave personale, salvata solo in questo browser e inviata solo all'endpoint del profilo."
   },
+  "optionsNoKeyHint": {
+    "message": "Non hai una chiave? Google AI Studio ne offre una gratuita per Gemini con il solo account Google, senza carta di credito."
+  },
+  "optionsNoKeyLink": {
+    "message": "Ottieni una chiave gratis"
+  },
   "optionsModel": {
     "message": "Modello / deployment"
   },
@@ -115,6 +121,9 @@
   },
   "panelOpenOptions": {
     "message": "Apri le opzioni"
+  },
+  "panelFreeKey": {
+    "message": "Ottieni una chiave gratis"
   },
   "panelGenericError": {
     "message": "Riassunto non disponibile. Riprova tra qualche istante."

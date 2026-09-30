@@ -18,7 +18,7 @@
 
 ![TL;DR widget in action on a Steam game page](docs/assets/screenshot-widget.gif)
 
-Bring your own AI: the extension works with **your own API key** on the provider you prefer — Anthropic Claude, Claude deployed on Azure AI Foundry, OpenAI (official or Azure), Google Gemini, or a local OpenAI-compatible model (Ollama, LM Studio). No account, no backend, no telemetry.
+Bring your own AI: the extension runs on **your own API key**, and getting started is free — [Google AI Studio](https://aistudio.google.com/apikey) hands you a Gemini key with just a Google account, no credit card. From there you can switch to the provider you prefer — Anthropic Claude, Claude deployed on Azure AI Foundry, OpenAI (official or Azure), Google Gemini, or a local OpenAI-compatible model (Ollama, LM Studio). No account, no backend, no telemetry.
 
 > ⚠️ **Compliance first**: the extension **never posts anything to Steam**. The summary is rendered locally in your browser only. Publishing bot-generated reviews would violate Steam's rules ("Do not artificially influence reviews"). See [docs/SPECS.md](docs/SPECS.md#2-compliance-with-steam-guidelines).
 
@@ -53,7 +53,14 @@ Bring your own AI: the extension works with **your own API key** on the provider
 
 **[Install Steam TL;DR](https://chromewebstore.google.com/detail/mokdidbnndooghbajfnljladeifllmdg)** — one click, auto-updates.
 
-Then open the extension's **Options**, create a provider profile with your API key (or a local model), and visit any Steam game page.
+#### Get started in 2 minutes (free)
+
+1. Install the extension from the link above
+2. Grab a **free Gemini API key** at [aistudio.google.com/apikey](https://aistudio.google.com/apikey) — sign in with a Google account, click *Create API key*, copy it. No credit card, no billing account
+3. Open the extension's **Options**, create a profile of type *Google Gemini*, paste the key, pick a model (`gemini-3-flash` is free and fast) and save
+4. Open any Steam game page and click the **TL;DR** tab on the right edge
+
+Gemini's free tier is rate-limited but generous for this (a summary is one request), and Google may use free-tier inputs to improve its models — here that means public Steam review text, never anything of yours. Want it fully private? Point the extension at a [local model](#configuration-notes) instead: nothing leaves your machine.
 
 ### From a release (no build tools needed)
 

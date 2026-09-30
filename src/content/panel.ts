@@ -237,6 +237,7 @@ const CSS = `
   font-size: 13px;
 }
 .stldr-options-link:hover { color: #fff; background: rgba(103, 193, 245, 0.35); }
+.stldr-free-key { display: inline-block; margin-left: 8px; text-decoration: none; }
 .stldr-footer {
   margin-top: 14px;
   padding-top: 10px;
@@ -483,6 +484,16 @@ export function createWidget(
       link.textContent = t("panelOpenOptions");
       link.addEventListener("click", openOptions);
       body.append(link);
+
+      // The wall most people hit is not "where are the options" but "I have
+      // no key": point at the one provider whose key is free and instant.
+      const freeKey = document.createElement("a");
+      freeKey.className = "stldr-options-link stldr-free-key";
+      freeKey.href = "https://aistudio.google.com/apikey";
+      freeKey.target = "_blank";
+      freeKey.rel = "noopener noreferrer";
+      freeKey.textContent = t("panelFreeKey");
+      body.append(freeKey);
     } else {
       console.error("[steam-tldr]", message);
       addRegenerate();

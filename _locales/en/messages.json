@@ -41,6 +41,12 @@
   "optionsApiKeyHint": {
     "message": "Your personal key, stored only in this browser and sent only to the profile's endpoint."
   },
+  "optionsNoKeyHint": {
+    "message": "No key yet? Google AI Studio gives you a free Gemini key with just a Google account, no credit card."
+  },
+  "optionsNoKeyLink": {
+    "message": "Get a free key"
+  },
   "optionsModel": {
     "message": "Model / deployment"
   },
@@ -115,6 +121,9 @@
   },
   "panelOpenOptions": {
     "message": "Open options"
+  },
+  "panelFreeKey": {
+    "message": "Get a free key"
   },
   "panelGenericError": {
     "message": "Summary unavailable. Try again in a moment."
